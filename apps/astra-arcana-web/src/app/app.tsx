@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import logo from '../assets/astra-arcana-logo.png';
 import textLogo from '../assets/astra-arcana-text.png';
+import founderPic from '../assets/founder-astra.png';
 
 // Define types for our drag items
 type ItemType = 'ingredient' | 'incantation';
@@ -137,8 +138,14 @@ export function App() {
             <p className="text-purple-300 italic ml-2">Cast anything, anywhere</p>
           </div>
         </div>
-        {/* User icon - placeholder */}
-        <div className="w-12 h-12 bg-gray-700 rounded-full"></div>
+        {/* Founder profile picture */}
+        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500">
+          <img 
+            src={founderPic} 
+            alt="Founder Astra" 
+            className="w-full h-full object-cover" 
+          />
+        </div>
       </header>
       
       {loading && (
