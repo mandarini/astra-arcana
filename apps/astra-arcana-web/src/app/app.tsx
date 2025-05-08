@@ -1,5 +1,7 @@
 
 import { useEffect, useState } from 'react';
+import logo from '../assets/astra-arcana-logo.png';
+import textLogo from '../assets/astra-arcana-text.png';
 
 // Define types for our drag items
 type ItemType = 'ingredient' | 'incantation';
@@ -41,9 +43,6 @@ export function App() {
     fetchData();
   }, []);
 
-  // Default ingredients and incantations from the sketch if API fails
-  const defaultIngredients = ['shimmer', 'quill', 'sigil', 'summon imp', 'bind'];
-  const defaultIncantations = ['overlay', 'scribe', 'unlock', 'banish', 'swaddle'];
 
   const handleIngredientClick = (ingredient: string) => {
     setSelectedIngredients([...selectedIngredients, ingredient]);
@@ -109,22 +108,33 @@ export function App() {
     setSelectedIncantations([]);
   };
 
-  // Display items from API or use defaults if none available
-  const displayIngredients = ingredients.length > 0 ? ingredients : defaultIngredients;
-  const displayIncantations = incantations.length > 0 ? incantations : defaultIncantations;
+  // Count occurrences of ingredients and incantations in the cauldron
+  const countIngredients = selectedIngredients.reduce<Record<string, number>>(
+    (acc, ingredient) => {
+      acc[ingredient] = (acc[ingredient] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
+
+  const countIncantations = selectedIncantations.reduce<Record<string, number>>(
+    (acc, incantation) => {
+      acc[incantation] = (acc[incantation] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
 
   return (
     <div className="min-h-screen bg-gray-900 text-purple-100 p-4">
       {/* Header section */}
       <header className="flex items-center justify-between mb-8 p-4 border-b border-purple-800">
         <div className="flex items-center">
-          {/* Placeholder for logo */}
-          <div className="w-16 h-16 mr-4 bg-purple-900 rounded-full flex items-center justify-center text-4xl">
-            A
-          </div>
+          {/* Logo */}
+          <img src={logo} alt="Astra Arcana Logo" className="w-16 h-16 mr-4 object-contain" />
           <div>
-            <h1 className="text-4xl font-bold tracking-wider text-purple-100">ASTRA ARCANA</h1>
-            <p className="text-purple-300 italic">Conjure code. Cast beyond.</p>
+            <img src={textLogo} alt="ASTRA ARCANA" className="h-10 mb-1" />
+            <p className="text-purple-300 italic ml-2">Cast anything, anywhere</p>
           </div>
         </div>
         {/* User icon - placeholder */}
@@ -150,18 +160,24 @@ export function App() {
         <div className="bg-gray-800 p-4 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4 text-purple-200 text-center">Ingredients</h2>
           <div className="flex flex-col space-y-3">
-            {displayIngredients.map((ingredient, index) => (
-              <button
-                key={index}
-                draggable="true"
-                onClick={() => handleIngredientClick(ingredient)}
-                onDragStart={(e) => onDragStart(e, ingredient, 'ingredient')}
-                onDragEnd={onDragEnd}
-                className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
-              >
-                {ingredient}
-              </button>
-            ))}
+            {ingredients.length > 0 ? (
+              ingredients.map((ingredient, index) => (
+                <button
+                  key={index}
+                  draggable="true"
+                  onClick={() => handleIngredientClick(ingredient)}
+                  onDragStart={(e) => onDragStart(e, ingredient, 'ingredient')}
+                  onDragEnd={onDragEnd}
+                  className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
+                >
+                  {ingredient}
+                </button>
+              ))
+            ) : (
+              <div className="text-red-300 p-4 text-center bg-gray-700 rounded-lg">
+                {loading ? 'Loading ingredients...' : 'No ingredients available from API'}
+              </div>
+            )}
           </div>
         </div>
 
@@ -169,26 +185,32 @@ export function App() {
         <div className="bg-gray-800 p-4 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-4 text-purple-200 text-center">Incantations</h2>
           <div className="flex flex-col space-y-3">
-            {displayIncantations.map((incantation, index) => (
-              <button
-                key={index}
-                draggable="true"
-                onClick={() => handleIncantationClick(incantation)}
-                onDragStart={(e) => onDragStart(e, incantation, 'incantation')}
-                onDragEnd={onDragEnd}
-                className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
-              >
-                {incantation}
-              </button>
-            ))}
+            {incantations.length > 0 ? (
+              incantations.map((incantation, index) => (
+                <button
+                  key={index}
+                  draggable="true"
+                  onClick={() => handleIncantationClick(incantation)}
+                  onDragStart={(e) => onDragStart(e, incantation, 'incantation')}
+                  onDragEnd={onDragEnd}
+                  className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
+                >
+                  {incantation}
+                </button>
+              ))
+            ) : (
+              <div className="text-red-300 p-4 text-center bg-gray-700 rounded-lg">
+                {loading ? 'Loading incantations...' : 'No incantations available from API'}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Cauldron Staging area */}
+        {/* Cauldron area */}
         <div className="bg-gray-800 p-4 rounded-lg shadow-md flex flex-col">
-          <h2 className="text-2xl font-semibold mb-4 text-purple-200 text-center">Cauldron Staging</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-purple-200 text-center">Cauldron</h2>
           
-          {/* Empty staging area with dashed border */}
+          {/* Empty cauldron area with dashed border */}
           <div 
             onDragOver={onDragOver}
             onDragLeave={onDragLeave}
@@ -196,22 +218,26 @@ export function App() {
             className={`flex-grow border-2 border-dashed ${isDraggedOver ? 'border-pink-400 bg-purple-900/30' : 'border-blue-500'} rounded-lg p-4 mb-4 min-h-40 transition-colors duration-200`}>
             {selectedIngredients.length > 0 || selectedIncantations.length > 0 ? (
               <div className="space-y-2">
-                {selectedIngredients.length > 0 && (
+                {Object.keys(countIngredients).length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-purple-300">Ingredients:</h3>
                     <ul className="ml-2">
-                      {selectedIngredients.map((item, index) => (
-                        <li key={`ing-${index}`} className="text-pink-200">{item}</li>
+                      {Object.entries(countIngredients).map(([ingredient, count], index) => (
+                        <li key={`ing-${index}`} className="text-pink-200">
+                          {ingredient} {count > 1 && <span className="text-xs bg-purple-700 px-1.5 py-0.5 rounded-full ml-1">x{count}</span>}
+                        </li>
                       ))}
                     </ul>
                   </div>
                 )}
-                {selectedIncantations.length > 0 && (
+                {Object.keys(countIncantations).length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-purple-300">Incantations:</h3>
                     <ul className="ml-2">
-                      {selectedIncantations.map((item, index) => (
-                        <li key={`inc-${index}`} className="text-pink-200">{item}</li>
+                      {Object.entries(countIncantations).map(([incantation, count], index) => (
+                        <li key={`inc-${index}`} className="text-pink-200">
+                          {incantation} {count > 1 && <span className="text-xs bg-purple-700 px-1.5 py-0.5 rounded-full ml-1">x{count}</span>}
+                        </li>
                       ))}
                     </ul>
                   </div>
