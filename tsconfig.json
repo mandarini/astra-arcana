@@ -5,6 +5,9 @@
   "references": [
     {
       "path": "./apps/astra-arcana-web"
+    },
+    {
+      "path": "./libs/spellcasting-types"
     }
   ]
 }

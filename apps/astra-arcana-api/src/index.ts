@@ -1,12 +1,4 @@
-/**
- * Astra Arcana API - Cloudflare Worker
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Provides endpoints for magical ingredients and incantations.
- */
+import { Ingredient, Incantation } from "@astra-arcana/spellcasting-types";
 
 // Sample data for the API endpoints
 const ingredients = [
