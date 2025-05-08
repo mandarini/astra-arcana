@@ -3,6 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "nx": {
-    "name": "astra-arcana-web"
-  }
+    "name": "astra-arcana-web",
+    "implicitDependencies": ["astra-arcana-api"],
+		"targets": {
+			"dev": {
+				"continuous": true,
+        "dependsOn": ["^dev"]
+			}
+		}
+	}
 }
