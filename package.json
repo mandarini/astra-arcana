@@ -10,6 +10,9 @@
     "react-router-dom": "6.29.0"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.8.19",
+		"@cloudflare/workers-types": "^4.20250508.0",
+		"wrangler": "^4.14.4",
     "@eslint/js": "^9.8.0",
     "@nx/eslint": "21.0.2",
     "@nx/eslint-plugin": "21.0.2",
