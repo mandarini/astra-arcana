@@ -1,6 +1,9 @@
 
 import { useEffect, useState } from 'react';
 
+// Define types for our drag items
+type ItemType = 'ingredient' | 'incantation';
+
 export function App() {
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [incantations, setIncantations] = useState<string[]>([]);
@@ -8,6 +11,7 @@ export function App() {
   const [selectedIncantations, setSelectedIncantations] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDraggedOver, setIsDraggedOver] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,6 +51,54 @@ export function App() {
 
   const handleIncantationClick = (incantation: string) => {
     setSelectedIncantations([...selectedIncantations, incantation]);
+  };
+  
+  // Simplified drag and drop handlers
+  const onDragStart = (e: React.DragEvent, content: string, itemType: ItemType) => {
+    // Store the dragged item and its type as a JSON string
+    const data = JSON.stringify({ content, itemType });
+    e.dataTransfer.setData('application/json', data);
+    e.dataTransfer.effectAllowed = 'move';
+    
+    // Add visual feedback
+    const target = e.target as HTMLElement;
+    target.style.opacity = '0.4';
+  };
+  
+  const onDragEnd = (e: React.DragEvent) => {
+    // Reset opacity when drag ends
+    const target = e.target as HTMLElement;
+    target.style.opacity = '1';
+  };
+  
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggedOver(true);
+    return false;
+  };
+  
+  const onDragLeave = () => {
+    setIsDraggedOver(false);
+  };
+  
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDraggedOver(false);
+    
+    try {
+      // Get the data from the drag event
+      const jsonData = e.dataTransfer.getData('application/json');
+      const { content, itemType } = JSON.parse(jsonData);
+      
+      // Add to the appropriate list
+      if (itemType === 'ingredient') {
+        setSelectedIngredients(prev => [...prev, content]);
+      } else if (itemType === 'incantation') {
+        setSelectedIncantations(prev => [...prev, content]);
+      }
+    } catch (error) {
+      console.error('Error processing drop:', error);
+    }
   };
 
   const handleCastSpell = () => {
@@ -101,8 +153,11 @@ export function App() {
             {displayIngredients.map((ingredient, index) => (
               <button
                 key={index}
+                draggable="true"
                 onClick={() => handleIngredientClick(ingredient)}
-                className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center"
+                onDragStart={(e) => onDragStart(e, ingredient, 'ingredient')}
+                onDragEnd={onDragEnd}
+                className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
               >
                 {ingredient}
               </button>
@@ -117,8 +172,11 @@ export function App() {
             {displayIncantations.map((incantation, index) => (
               <button
                 key={index}
+                draggable="true"
                 onClick={() => handleIncantationClick(incantation)}
-                className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center"
+                onDragStart={(e) => onDragStart(e, incantation, 'incantation')}
+                onDragEnd={onDragEnd}
+                className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
               >
                 {incantation}
               </button>
@@ -131,7 +189,11 @@ export function App() {
           <h2 className="text-2xl font-semibold mb-4 text-purple-200 text-center">Cauldron Staging</h2>
           
           {/* Empty staging area with dashed border */}
-          <div className="flex-grow border-2 border-dashed border-blue-500 rounded-lg p-4 mb-4 min-h-40">
+          <div 
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+            className={`flex-grow border-2 border-dashed ${isDraggedOver ? 'border-pink-400 bg-purple-900/30' : 'border-blue-500'} rounded-lg p-4 mb-4 min-h-40 transition-colors duration-200`}>
             {selectedIngredients.length > 0 || selectedIncantations.length > 0 ? (
               <div className="space-y-2">
                 {selectedIngredients.length > 0 && (
