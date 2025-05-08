@@ -1,31 +1,9 @@
 import { Ingredient, Incantation } from "@astra-arcana/spellcasting-types";
+import { defaultIngredients, defaultIncantations } from "./default-data";
 
-// Sample data for the API endpoints
-const ingredients = [
-  "Dragon scales",
-  "Phoenix feather",
-  "Mandrake root",
-  "Unicorn horn",
-  "Mermaid tears",
-  "Troll blood",
-  "Fairy dust",
-  "Moonstone",
-  "Basilisk venom",
-  "Griffin claw"
-];
-
-const incantations = [
-  "Lumos Maxima",
-  "Expecto Patronum",
-  "Wingardium Leviosa",
-  "Alohomora",
-  "Accio",
-  "Expelliarmus",
-  "Protego",
-  "Revelio",
-  "Silencio",
-  "Incendio"
-];
+// Use the default data from the separate file
+const ingredients = defaultIngredients;
+const incantations = defaultIncantations;
 
 /**
  * Interface for the application environment
@@ -63,6 +41,7 @@ export default {
 
 		// Route to appropriate endpoint
 		if (path === '/api/ingredients') {
+			// Return the full ingredient objects
 			return new Response(JSON.stringify(ingredients), {
 				headers: {
 					'Content-Type': 'application/json',
@@ -70,6 +49,7 @@ export default {
 				}
 			});
 		} else if (path === '/api/incantations') {
+			// Return the full incantation objects
 			return new Response(JSON.stringify(incantations), {
 				headers: {
 					'Content-Type': 'application/json',
