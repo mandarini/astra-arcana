@@ -160,7 +160,7 @@ export function App() {
 
   // Configure toast options
   const toastOptions = {
-    position: 'top-right' as ToastPosition,
+    position: 'bottom-left' as ToastPosition,
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
