@@ -3,6 +3,12 @@ import { SpellcastingSDK } from '@astra-arcana/typescript-sdk';
 const moonphase = await getMoonphase();
 console.log(moonphase);
 
+const sdk = new SpellcastingSDK();
+const result = await sdk.filter({
+  affinity: 'fire',
+});
+console.log(result);
+
 // returns the current moon phase as a percentage
 async function getMoonphase(): Promise<number> {
   const timestamp = Math.floor(Date.now() / 1000);

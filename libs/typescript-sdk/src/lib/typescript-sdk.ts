@@ -1,4 +1,28 @@
-import { Ingredient, Incantation, Recipe } from '@astra-arcana/spellcasting-types';
+import { Ingredient, Incantation, Recipe, Element, Age, Language, MoonPhase } from '@astra-arcana/spellcasting-types';
+
+// Interface for filter options
+export interface FilterOptions {
+  name?: string;
+  affinity?: Element;
+  age?: Age;
+  language?: Language;
+  kind?: 'ritual' | 'spell' | 'support' | 'sacrifice' | 'other';
+  moonphase?: MoonPhase;
+}
+
+// Interface for filter response
+export interface FilterResponse {
+  ingredients: Ingredient[];
+  incantations: Incantation[];
+  filters: {
+    name?: string;
+    affinity?: Element;
+    age?: Age;
+    language?: Language;
+    kind?: string;
+    moonphase?: MoonPhase;
+  };
+}
 
 export class SpellcastingSDK {
   private apiUrl: string;
@@ -91,6 +115,39 @@ export class SpellcastingSDK {
       return data;
     } catch (error) {
       console.error('Error casting spell:', error);
+      throw error;
+    }
+  }
+  
+  /**
+   * Filter ingredients and incantations based on provided criteria
+   * @param options Filter options like name, affinity, etc.
+   * @returns Filtered ingredients and incantations
+   */
+  async filter(options: FilterOptions): Promise<FilterResponse> {
+    try {
+      // Build the query parameters
+      const params = new URLSearchParams();
+      
+      // Add each defined option to the query params
+      if (options.name) params.append('name', options.name);
+      if (options.affinity) params.append('affinity', options.affinity);
+      if (options.age) params.append('age', options.age);
+      if (options.language) params.append('language', options.language);
+      if (options.kind) params.append('kind', options.kind);
+      if (options.moonphase) params.append('moonphase', options.moonphase);
+      
+      const url = `${this.apiUrl}/api/filter?${params.toString()}`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Failed to filter items: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data as FilterResponse;
+    } catch (error) {
+      console.error('Error filtering items:', error);
       throw error;
     }
   }
