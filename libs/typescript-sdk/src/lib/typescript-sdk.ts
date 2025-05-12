@@ -10,19 +10,7 @@ export interface FilterOptions {
   moonphase?: MoonPhase;
 }
 
-// Interface for filter response
-export interface FilterResponse {
-  ingredients: Ingredient[];
-  incantations: Incantation[];
-  filters: {
-    name?: string;
-    affinity?: Element;
-    age?: Age;
-    language?: Language;
-    kind?: string;
-    moonphase?: MoonPhase;
-  };
-}
+// No longer need the FilterResponse interface since we removed the filter method
 
 export class SpellcastingSDK {
   private apiUrl: string;
@@ -32,11 +20,27 @@ export class SpellcastingSDK {
   }
 
   /**
-   * Fetches all available ingredients from the API
+   * Fetches ingredients from the API with optional filtering
+   * @param options Filter options like name, affinity, and age
+   * @returns Filtered or all ingredients
    */
-  async getIngredients(): Promise<Ingredient[]> {
+  async getIngredients(options?: Pick<FilterOptions, 'name' | 'affinity' | 'age'>): Promise<Ingredient[]> {
     try {
-      const response = await fetch(`${this.apiUrl}/api/ingredients`);
+      let url = `${this.apiUrl}/api/ingredients`;
+      
+      // Add filter parameters if options are provided
+      if (options) {
+        const params = new URLSearchParams();
+        if (options.name) params.append('name', options.name);
+        if (options.affinity) params.append('affinity', options.affinity);
+        if (options.age) params.append('age', options.age);
+        
+        if (params.toString()) {
+          url += `?${params.toString()}`;
+        }
+      }
+      
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch ingredients: ${response.status}`);
@@ -51,11 +55,29 @@ export class SpellcastingSDK {
   }
 
   /**
-   * Fetches all available incantations from the API
+   * Fetches incantations from the API with optional filtering
+   * @param options Filter options like name, affinity, language, kind, and moonphase
+   * @returns Filtered or all incantations
    */
-  async getIncantations(): Promise<Incantation[]> {
+  async getIncantations(options?: Pick<FilterOptions, 'name' | 'affinity' | 'language' | 'kind' | 'moonphase'>): Promise<Incantation[]> {
     try {
-      const response = await fetch(`${this.apiUrl}/api/incantations`);
+      let url = `${this.apiUrl}/api/incantations`;
+      
+      // Add filter parameters if options are provided
+      if (options) {
+        const params = new URLSearchParams();
+        if (options.name) params.append('name', options.name);
+        if (options.affinity) params.append('affinity', options.affinity);
+        if (options.language) params.append('language', options.language);
+        if (options.kind) params.append('kind', options.kind);
+        if (options.moonphase) params.append('moonphase', options.moonphase);
+        
+        if (params.toString()) {
+          url += `?${params.toString()}`;
+        }
+      }
+      
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`Failed to fetch incantations: ${response.status}`);
@@ -119,36 +141,5 @@ export class SpellcastingSDK {
     }
   }
   
-  /**
-   * Filter ingredients and incantations based on provided criteria
-   * @param options Filter options like name, affinity, etc.
-   * @returns Filtered ingredients and incantations
-   */
-  async filter(options: FilterOptions): Promise<FilterResponse> {
-    try {
-      // Build the query parameters
-      const params = new URLSearchParams();
-      
-      // Add each defined option to the query params
-      if (options.name) params.append('name', options.name);
-      if (options.affinity) params.append('affinity', options.affinity);
-      if (options.age) params.append('age', options.age);
-      if (options.language) params.append('language', options.language);
-      if (options.kind) params.append('kind', options.kind);
-      if (options.moonphase) params.append('moonphase', options.moonphase);
-      
-      const url = `${this.apiUrl}/api/filter?${params.toString()}`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`Failed to filter items: ${response.status}`);
-      }
-
-      const data = await response.json();
-      return data as FilterResponse;
-    } catch (error) {
-      console.error('Error filtering items:', error);
-      throw error;
-    }
-  }
+  // Filter method removed as requested
 }

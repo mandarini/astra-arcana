@@ -99,72 +99,61 @@ export default {
     }
 
     // Route to appropriate endpoint
-    if (path === '/api/filter') {
-      // Handle the new filter endpoint
+    if (path === '/api/ingredients') {
       // Get filter parameters from query string
       const params = url.searchParams;
       
-      // Extract filter parameters
+      // Extract filter parameters relevant to ingredients
       const name = params.get('name')?.toLowerCase();
       const affinity = params.get('affinity');
       const age = params.get('age');
-      const language = params.get('language');
-      const kind = params.get('kind');
-      const moonphase = params.get('moonphase');
       
-      // Filter ingredients
-      const filteredIngredients = ingredients.filter(ingredient => {
-        // Check each filter condition
-        if (name && !ingredient.name.toLowerCase().includes(name)) return false;
-        if (affinity && ingredient.affinity !== affinity) return false;
-        if (age && ingredient.age !== age) return false;
-        
-        return true; // Include if passes all filters
-      });
+      // Apply filters if any parameters are provided
+      let results = ingredients;
+      if (name || affinity || age) {
+        results = ingredients.filter(ingredient => {
+          // Check each filter condition
+          if (name && !ingredient.name.toLowerCase().includes(name)) return false;
+          if (affinity && ingredient.affinity !== affinity) return false;
+          if (age && ingredient.age !== age) return false;
+          
+          return true; // Include if passes all filters
+        });
+      }
       
-      // Filter incantations
-      const filteredIncantations = incantations.filter(incantation => {
-        // Check each filter condition
-        if (name && !incantation.name.toLowerCase().includes(name)) return false;
-        if (affinity && incantation.affinity !== affinity) return false;
-        if (language && incantation.language !== language) return false;
-        if (kind && incantation.kind !== kind) return false;
-        if (moonphase && incantation.moonphase !== moonphase) return false;
-        
-        return true; // Include if passes all filters
-      });
-      
-      return new Response(
-        JSON.stringify({
-          ingredients: filteredIngredients,
-          incantations: filteredIncantations,
-          filters: {
-            name: name || undefined,
-            affinity: affinity || undefined,
-            age: age || undefined,
-            language: language || undefined,
-            kind: kind || undefined,
-            moonphase: moonphase || undefined
-          }
-        }),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            ...corsHeaders,
-          },
-        }
-      );
-    } else if (path === '/api/ingredients') {
-      // Return the full ingredient objects
-      return new Response(JSON.stringify(ingredients), {
+      return new Response(JSON.stringify(results), {
         headers: {
           'Content-Type': 'application/json',
           ...corsHeaders,
         },
       });
     } else if (path === '/api/incantations') {
-      // Return the full incantation objects
-      return new Response(JSON.stringify(incantations), {
+      // Get filter parameters from query string
+      const params = url.searchParams;
+      
+      // Extract filter parameters relevant to incantations
+      const name = params.get('name')?.toLowerCase();
+      const affinity = params.get('affinity');
+      const language = params.get('language');
+      const kind = params.get('kind');
+      const moonphase = params.get('moonphase');
+      
+      // Apply filters if any parameters are provided
+      let results = incantations;
+      if (name || affinity || language || kind || moonphase) {
+        results = incantations.filter(incantation => {
+          // Check each filter condition
+          if (name && !incantation.name.toLowerCase().includes(name)) return false;
+          if (affinity && incantation.affinity !== affinity) return false;
+          if (language && incantation.language !== language) return false;
+          if (kind && incantation.kind !== kind) return false;
+          if (moonphase && incantation.moonphase !== moonphase) return false;
+          
+          return true; // Include if passes all filters
+        });
+      }
+      
+      return new Response(JSON.stringify(results), {
         headers: {
           'Content-Type': 'application/json',
           ...corsHeaders,
@@ -183,11 +172,10 @@ export default {
         JSON.stringify({
           message: 'Welcome to the Astra Arcana API',
           endpoints: {
-            ingredients: '/api/ingredients',
-            incantations: '/api/incantations',
+            ingredients: '/api/ingredients?name=...&affinity=...&age=...',
+            incantations: '/api/incantations?name=...&affinity=...&language=...&kind=...&moonphase=...',
             recipes: '/api/recipes',
             cast: '/api/cast',
-            filter: '/api/filter?name=...&affinity=...&language=...&kind=...&moonphase=...&age=...',
           },
         }),
         {

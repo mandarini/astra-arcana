@@ -4,10 +4,12 @@ const moonphase = await getMoonphase();
 console.log(moonphase);
 
 const sdk = new SpellcastingSDK();
-const result = await sdk.filter({
-  affinity: 'fire',
-});
-console.log(result);
+
+// Get filtered ingredients and incantations in parallel
+const [ingredients, incantations] = await Promise.all([
+  sdk.getIngredients({ affinity: 'fire' }),
+  sdk.getIncantations({ affinity: 'fire' }),
+]);
 
 // returns the current moon phase as a percentage
 async function getMoonphase(): Promise<number> {
