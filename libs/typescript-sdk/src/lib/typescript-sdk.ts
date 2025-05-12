@@ -3,7 +3,7 @@ import { Ingredient, Incantation } from '@astra-arcana/spellcasting-types';
 export class SpellcastingSDK {
   private apiUrl: string;
 
-  constructor(apiUrl: string = 'http://localhost:8787') {
+  constructor(apiUrl: string = 'http://localhost:18787') {
     this.apiUrl = apiUrl;
   }
 
@@ -13,7 +13,7 @@ export class SpellcastingSDK {
   async getIngredients(): Promise<Ingredient[]> {
     try {
       const response = await fetch(`${this.apiUrl}/api/ingredients`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch ingredients: ${response.status}`);
       }
@@ -32,7 +32,7 @@ export class SpellcastingSDK {
   async getIncantations(): Promise<Incantation[]> {
     try {
       const response = await fetch(`${this.apiUrl}/api/incantations`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch incantations: ${response.status}`);
       }
@@ -48,7 +48,10 @@ export class SpellcastingSDK {
   /**
    * Casts a spell with the selected ingredients and incantations
    */
-  async castSpell(ingredients: Ingredient[], incantations: Incantation[]): Promise<any> {
+  async castSpell(
+    ingredients: Ingredient[],
+    incantations: Incantation[]
+  ): Promise<any> {
     try {
       const response = await fetch(`${this.apiUrl}/api/cast`, {
         method: 'POST',
