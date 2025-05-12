@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "../spellcasting-types"
+    },
+    {
       "path": "./tsconfig.lib.json"
     }
   ]

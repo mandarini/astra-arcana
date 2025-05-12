@@ -13,5 +13,8 @@
     },
     "./package.json": "./package.json"
   },
-  "dependencies": {}
+  "nx": {
+    "name": "typescript-sdk",
+    "sourceRoot": "src"
+    }
 }

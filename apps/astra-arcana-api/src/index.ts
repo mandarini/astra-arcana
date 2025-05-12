@@ -20,7 +20,7 @@ export default {
 		// Enable CORS
 		const corsHeaders = {
 			'Access-Control-Allow-Origin': '*',
-			'Access-Control-Allow-Methods': 'GET, OPTIONS',
+			'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
 			'Access-Control-Allow-Headers': 'Content-Type'
 		};
 
@@ -31,7 +31,54 @@ export default {
 			});
 		}
 
-		// Only allow GET requests
+		// Allow GET and POST requests based on the endpoint
+		if (path === '/api/cast') {
+			// Only allow POST for the cast endpoint
+			if (request.method !== 'POST') {
+				return new Response('Method not allowed for this endpoint', {
+					status: 405,
+					headers: corsHeaders
+				});
+			}
+
+			try {
+				// Parse the JSON body with proper typing
+				const data = await request.json() as { 
+					ingredients?: Ingredient[], 
+					incantations?: Incantation[] 
+				};
+				const { ingredients = [], incantations = [] } = data;
+				
+				// For now, always return success
+				return new Response(JSON.stringify({
+					success: true,
+					message: 'Spell cast successfully!',
+					timestamp: new Date().toISOString(),
+					details: {
+						ingredients_count: ingredients?.length || 0,
+						incantations_count: incantations?.length || 0
+					}
+				}), {
+					headers: {
+						'Content-Type': 'application/json',
+						...corsHeaders
+					}
+				});
+			} catch (error) {
+				return new Response(JSON.stringify({
+					error: 'Invalid request data',
+					message: error instanceof Error ? error.message : 'Unknown error'
+				}), {
+					status: 400,
+					headers: {
+						'Content-Type': 'application/json',
+						...corsHeaders
+					}
+				});
+			}
+		}
+		
+		// For other endpoints, only allow GET requests
 		if (request.method !== 'GET') {
 			return new Response('Method not allowed', {
 				status: 405,
@@ -61,7 +108,8 @@ export default {
 				message: 'Welcome to the Astra Arcana API',
 				endpoints: {
 					ingredients: '/api/ingredients',
-					incantations: '/api/incantations'
+					incantations: '/api/incantations',
+					cast: '/api/cast'
 				}
 			}), {
 				headers: {

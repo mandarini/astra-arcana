@@ -1,6 +1,9 @@
 
 import { useEffect, useState } from 'react';
 import { Ingredient, Incantation } from '@astra-arcana/spellcasting-types';
+import { SpellcastingSDK } from '@astra-arcana/typescript-sdk';
+import { ToastContainer, toast, ToastPosition } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import logo from '../assets/astra-arcana-logo.png';
 import textLogo from '../assets/astra-arcana-text.png';
 import founderPic from '../assets/founder-astra.png';
@@ -17,21 +20,19 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
 
+  // Initialize the SDK with the API URL from environment variable
+  const sdk = new SpellcastingSDK(import.meta.env.VITE_API_URL || 'http://localhost:8787');
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Use the environment variable for API URL
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8787';
-        const ingredientsResponse = await fetch(`${apiUrl}/api/ingredients`);
-        const incantationsResponse = await fetch(`${apiUrl}/api/incantations`);
         
-        if (!ingredientsResponse.ok || !incantationsResponse.ok) {
-          throw new Error('Failed to fetch data from API');
-        }
-
-        const ingredientsData = await ingredientsResponse.json();
-        const incantationsData = await incantationsResponse.json();
+        // Use the SDK to fetch ingredients and incantations
+        const [ingredientsData, incantationsData] = await Promise.all([
+          sdk.getIngredients(),
+          sdk.getIncantations()
+        ]);
 
         setIngredients(ingredientsData);
         setIncantations(incantationsData);
@@ -103,12 +104,48 @@ export function App() {
     }
   };
 
-  const handleCastSpell = () => {
-    console.log('Casting spell with ingredients:', selectedIngredients);
-    console.log('and incantations:', selectedIncantations);
-    // Reset selections after casting
-    setSelectedIngredients([]);
-    setSelectedIncantations([]);
+  // Configure toast options
+  const toastOptions = {
+    position: 'top-right' as ToastPosition,
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: 'dark' as const,
+    style: { background: '#1e1e2e' }
+  };
+
+  const handleCastSpell = async () => {
+    try {
+      console.log('Casting spell with ingredients:', selectedIngredients);
+      console.log('and incantations:', selectedIncantations);
+      
+      // Use the SDK to cast the spell
+      const result = await sdk.castSpell(selectedIngredients, selectedIncantations);
+      console.log('Spell cast result:', result);
+      
+      // Show success toast
+      toast.success(`✨ ${result.message || 'Spell cast successfully!'}`, {
+        ...toastOptions,
+        icon: () => <span role="img" aria-label="magic">🔮</span>,
+        className: 'magical-toast-success'
+      });
+      
+      // Reset selections after casting
+      setSelectedIngredients([]);
+      setSelectedIncantations([]);
+    } catch (err) {
+      console.error('Error casting spell:', err);
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred during spell casting';
+      setError(errorMessage);
+      toast.error(`❌ ${errorMessage}`, {
+        ...toastOptions,
+        icon: () => <span role="img" aria-label="explosion">💥</span>,
+        className: 'magical-toast-error'
+      });
+    }
   };
 
   // Count occurrences of ingredients and incantations in the cauldron
@@ -139,8 +176,20 @@ export function App() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-900 text-purple-100 p-4">
-      {/* Header section */}
+    <div className="min-h-screen bg-gray-900 text-purple-100 p-4 relative">
+      {/* Toast container with theme configuration */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
       <header className="flex items-center justify-between mb-8 p-4 border-b border-purple-800 h-[100px]">
         <div className="flex items-center">
           {/* Logo */}
@@ -169,7 +218,7 @@ export function App() {
       {error && (
         <div className="bg-red-900 border-l-4 border-red-600 text-red-100 p-4 mb-4" role="alert">
           <p>{error}</p>
-          <p className="mt-2">Make sure the API is running on http://localhost:8787</p>
+          <p className="mt-2">Make sure the API is running on {import.meta.env.VITE_API_URL || 'http://localhost:8787'}</p>
         </div>
       )}
 

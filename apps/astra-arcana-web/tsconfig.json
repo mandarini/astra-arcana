@@ -3,6 +3,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/typescript-sdk"
+    },
+    {
       "path": "../../libs/spellcasting-types"
     },
     {
