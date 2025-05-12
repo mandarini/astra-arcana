@@ -10,7 +10,21 @@ export interface FilterOptions {
   moonphase?: MoonPhase;
 }
 
-// No longer need the FilterResponse interface since we removed the filter method
+// Custom error class for ingredient validation
+export class IngredientError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'IngredientError';
+  }
+}
+
+// Custom error class for incantation validation
+export class IncantationError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'IncantationError';
+  }
+}
 
 export class SpellcastingSDK {
   private apiUrl: string;
@@ -111,21 +125,134 @@ export class SpellcastingSDK {
   }
 
   /**
+   * Finds an ingredient by name
+   * @param name The name of the ingredient to find
+   * @returns The found ingredient or throws an error if not found
+   */
+  async findIngredientByName(name: string): Promise<Ingredient> {
+    const ingredients = await this.getIngredients({ name });
+    
+    if (ingredients.length === 0) {
+      throw new IngredientError(`Ingredient not found: ${name}`);
+    }
+    
+    return ingredients[0];
+  }
+
+  /**
+   * Finds an incantation by name
+   * @param name The name of the incantation to find
+   * @returns The found incantation or throws an error if not found
+   */
+  async findIncantationByName(name: string): Promise<Incantation> {
+    const incantations = await this.getIncantations({ name });
+    
+    if (incantations.length === 0) {
+      throw new IncantationError(`Incantation not found: ${name}`);
+    }
+    
+    return incantations[0];
+  }
+
+  /**
+   * Validates and resolves ingredient names to their full objects
+   * @param ingredientNames Array of ingredient names to validate and resolve
+   * @returns Array of validated ingredient objects
+   * @throws IngredientError if any ingredient is not found
+   */
+  async validateIngredients(ingredientNames: string[]): Promise<Ingredient[]> {
+    try {
+      // Get all ingredients first for efficiency (single API call)
+      const allIngredients = await this.getIngredients();
+      const resolvedIngredients: Ingredient[] = [];
+      
+      for (const name of ingredientNames) {
+        const ingredient = allIngredients.find(i => 
+          i.name.toLowerCase() === name.toLowerCase()
+        );
+        
+        if (!ingredient) {
+          throw new IngredientError(`Invalid ingredient: "${name}" not found`);
+        }
+        
+        resolvedIngredients.push(ingredient);
+      }
+      
+      return resolvedIngredients;
+    } catch (error) {
+      if (error instanceof IngredientError) {
+        throw error;
+      }
+      throw new IngredientError(`Error validating ingredients: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  /**
+   * Validates and resolves incantation names to their full objects
+   * @param incantationNames Array of incantation names to validate and resolve
+   * @returns Array of validated incantation objects
+   * @throws IncantationError if any incantation is not found
+   */
+  async validateIncantations(incantationNames: string[]): Promise<Incantation[]> {
+    try {
+      // Get all incantations first for efficiency (single API call)
+      const allIncantations = await this.getIncantations();
+      const resolvedIncantations: Incantation[] = [];
+      
+      for (const name of incantationNames) {
+        const incantation = allIncantations.find(i => 
+          i.name.toLowerCase() === name.toLowerCase()
+        );
+        
+        if (!incantation) {
+          throw new IncantationError(`Invalid incantation: "${name}" not found`);
+        }
+        
+        resolvedIncantations.push(incantation);
+      }
+      
+      return resolvedIncantations;
+    } catch (error) {
+      if (error instanceof IncantationError) {
+        throw error;
+      }
+      throw new IncantationError(`Error validating incantations: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  /**
    * Casts a spell with the selected ingredients and incantations
+   * Accepts either objects or strings
    */
   async castSpell(
-    ingredients: Ingredient[],
-    incantations: Incantation[]
+    ingredients: Ingredient[] | string[],
+    incantations: Incantation[] | string[]
   ): Promise<any> {
     try {
+      // Validate and convert if strings were provided
+      let validIngredients: Ingredient[];
+      let validIncantations: Incantation[];
+      
+      if (ingredients.length > 0 && typeof ingredients[0] === 'string') {
+        validIngredients = await this.validateIngredients(ingredients as string[]);
+      } else {
+        validIngredients = ingredients as Ingredient[];
+      }
+      
+      if (incantations.length > 0 && typeof incantations[0] === 'string') {
+        validIncantations = await this.validateIncantations(incantations as string[]);
+      } else {
+        validIncantations = incantations as Incantation[];
+      }
+      
       const response = await fetch(`${this.apiUrl}/api/cast`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ingredients,
-          incantations,
+          ingredients: validIngredients,
+          incantations: validIncantations,
         }),
       });
 
