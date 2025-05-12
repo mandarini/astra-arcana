@@ -141,7 +141,7 @@ export function App() {
   return (
     <div className="min-h-screen bg-gray-900 text-purple-100 p-4">
       {/* Header section */}
-      <header className="flex items-center justify-between mb-8 p-4 border-b border-purple-800">
+      <header className="flex items-center justify-between mb-8 p-4 border-b border-purple-800 h-[100px]">
         <div className="flex items-center">
           {/* Logo */}
           <img src={logo} alt="Astra Arcana Logo" className="w-16 h-16 mr-4 object-contain" />
@@ -176,9 +176,9 @@ export function App() {
       {/* Main content grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Ingredients column */}
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4 text-purple-200 text-center">Ingredients</h2>
-          <div className="flex flex-col space-y-3">
+        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-170px)]">
+          <h2 className="text-2xl font-semibold py-4 px-4 text-purple-200 text-center sticky top-0 bg-gray-800 z-10">Ingredients</h2>
+          <div className="flex flex-col space-y-3 overflow-y-auto flex-1 px-4 pb-4">
             {ingredients.length > 0 ? (
               ingredients.map((ingredient, index) => (
                 <button
@@ -201,9 +201,9 @@ export function App() {
         </div>
 
         {/* Incantations column */}
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
-          <h2 className="text-2xl font-semibold mb-4 text-purple-200 text-center">Incantations</h2>
-          <div className="flex flex-col space-y-3">
+        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-170px)]">
+          <h2 className="text-2xl font-semibold py-4 px-4 text-purple-200 text-center sticky top-0 bg-gray-800 z-10">Incantations</h2>
+          <div className="flex flex-col space-y-3 overflow-y-auto flex-1 px-4 pb-4">
             {incantations.length > 0 ? (
               incantations.map((incantation, index) => (
                 <button
@@ -226,8 +226,9 @@ export function App() {
         </div>
 
         {/* Cauldron area */}
-        <div className="bg-gray-800 p-4 rounded-lg shadow-md flex flex-col">
-          <h2 className="text-2xl font-semibold mb-4 text-purple-200 text-center">Cauldron</h2>
+        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-170px)]">
+          <h2 className="text-2xl font-semibold py-4 px-4 text-purple-200 text-center sticky top-0 bg-gray-800 z-10">Cauldron</h2>
+          <div className="overflow-y-auto flex-1 px-4 pb-4 flex flex-col">
           
           {/* Empty cauldron area with dashed border */}
           <div 
@@ -266,12 +267,13 @@ export function App() {
               <p className="text-gray-500 text-center">Drag or select items to prepare your spell</p>
             )}
           </div>
+          </div>
           
           {/* Cast Spell button */}
           <button
             onClick={handleCastSpell}
             disabled={selectedIngredients.length === 0 && selectedIncantations.length === 0}
-            className="bg-pink-500 text-white py-3 px-6 rounded-lg text-xl font-semibold transition-all hover:bg-pink-600 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+            className="bg-pink-500 text-white py-3 px-6 mb-4 mx-4 rounded-lg text-xl font-semibold transition-all hover:bg-pink-600 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
             <span className="mr-2">✧</span> Cast Spell
           </button>
         </div>
