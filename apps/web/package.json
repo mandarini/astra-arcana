@@ -1,9 +1,9 @@
 {
-  "name": "@astra-arcana/astra-arcana-web",
+  "name": "web",
   "version": "0.0.1",
   "private": true,
   "nx": {
-    "name": "astra-arcana-web",
+    "name": "web",
     "implicitDependencies": [
       "api"
     ],
