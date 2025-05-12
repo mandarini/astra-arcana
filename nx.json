@@ -26,7 +26,7 @@
           "watchDepsName": "watch-deps"
         }
       },
-      "exclude": ["libs/spellcasting-types/*"]
+      "exclude": ["libs/spellcasting-types/*", "libs/typescript-sdk/*"]
     },
     {
       "plugin": "@nx/react/router-plugin",
@@ -61,7 +61,7 @@
     },
     {
       "plugin": "@nx/js/typescript",
-      "include": ["libs/spellcasting-types/*"],
+      "include": ["libs/spellcasting-types/*", "libs/typescript-sdk/*"],
       "options": {
         "typecheck": {
           "targetName": "typecheck"

@@ -8,6 +8,9 @@
     },
     {
       "path": "./libs/spellcasting-types"
+    },
+    {
+      "path": "./libs/typescript-sdk"
     }
   ]
 }
