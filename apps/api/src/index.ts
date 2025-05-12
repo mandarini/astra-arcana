@@ -1,9 +1,11 @@
-import { Ingredient, Incantation } from '@astra-arcana/spellcasting-types';
+import { Ingredient, Incantation, Recipe } from '@astra-arcana/spellcasting-types';
 import { defaultIngredients, defaultIncantations } from './default-data';
+import { defaultRecipes } from './default-recipes';
 
-// Use the default data from the separate file
+// Use the default data from the separate files
 const ingredients = defaultIngredients;
 const incantations = defaultIncantations;
+const recipes = defaultRecipes;
 
 /**
  * Interface for the application environment
@@ -113,6 +115,14 @@ export default {
           ...corsHeaders,
         },
       });
+    } else if (path === '/api/recipes') {
+      // Return the full recipe objects
+      return new Response(JSON.stringify(recipes), {
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders,
+        },
+      });
     } else if (path === '/' || path === '/api') {
       return new Response(
         JSON.stringify({
@@ -120,6 +130,7 @@ export default {
           endpoints: {
             ingredients: '/api/ingredients',
             incantations: '/api/incantations',
+            recipes: '/api/recipes',
             cast: '/api/cast',
           },
         }),

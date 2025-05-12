@@ -1,4 +1,4 @@
-import { Ingredient, Incantation } from '@astra-arcana/spellcasting-types';
+import { Ingredient, Incantation, Recipe } from '@astra-arcana/spellcasting-types';
 
 export class SpellcastingSDK {
   private apiUrl: string;
@@ -41,6 +41,25 @@ export class SpellcastingSDK {
       return data as Incantation[];
     } catch (error) {
       console.error('Error fetching incantations:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Fetches all available recipes from the API
+   */
+  async getRecipes(): Promise<Recipe[]> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/recipes`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch recipes: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data as Recipe[];
+    } catch (error) {
+      console.error('Error fetching recipes:', error);
       throw error;
     }
   }

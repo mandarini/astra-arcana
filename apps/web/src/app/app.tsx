@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Ingredient, Incantation } from '@astra-arcana/spellcasting-types';
+import { Ingredient, Incantation, Recipe } from '@astra-arcana/spellcasting-types';
+import { RecipeModal } from './RecipeModal';
 import { SpellcastingSDK } from '@astra-arcana/typescript-sdk';
 import { ToastContainer, toast, ToastPosition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +14,7 @@ type ItemType = 'ingredient' | 'incantation';
 export function App() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [incantations, setIncantations] = useState<Incantation[]>([]);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
     []
   );
@@ -22,6 +24,7 @@ export function App() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
+  const [showRecipesModal, setShowRecipesModal] = useState(false);
 
   // Initialize the SDK with the API URL from environment variable
   const sdk = new SpellcastingSDK(
@@ -33,14 +36,16 @@ export function App() {
       try {
         setLoading(true);
 
-        // Use the SDK to fetch ingredients and incantations
-        const [ingredientsData, incantationsData] = await Promise.all([
+        // Use the SDK to fetch ingredients, incantations, and recipes
+        const [ingredientsData, incantationsData, recipesData] = await Promise.all([
           sdk.getIngredients(),
           sdk.getIncantations(),
+          sdk.getRecipes(),
         ]);
 
         setIngredients(ingredientsData);
         setIncantations(incantationsData);
+        setRecipes(recipesData);
       } catch (err) {
         setError(
           err instanceof Error ? err.message : 'An unknown error occurred'
@@ -326,6 +331,14 @@ export function App() {
             Cauldron
           </h2>
           <div className="overflow-y-auto flex-1 px-4 pb-4 flex flex-col">
+            {/* Recipe Button at top */}
+            <button
+              onClick={() => setShowRecipesModal(true)}
+              className="bg-purple-600 text-white py-2 px-6 rounded-lg font-semibold transition-all hover:bg-purple-700 active:scale-95 flex items-center justify-center mb-4"
+            >
+              <span className="mr-2">📚</span> View Recipes
+            </button>
+            
             {/* Empty cauldron area with dashed border */}
             <div
               onDragOver={onDragOver}
@@ -391,7 +404,7 @@ export function App() {
             </div>
           </div>
 
-          {/* Cast Spell button */}
+          {/* Cast Spell button - full width at bottom */}
           <button
             onClick={handleCastSpell}
             disabled={
@@ -404,6 +417,21 @@ export function App() {
           </button>
         </div>
       </div>
+      
+      {/* Recipe Modal Portal */}
+      <RecipeModal 
+        isOpen={showRecipesModal}
+        onClose={() => setShowRecipesModal(false)}
+        recipes={recipes}
+        loading={loading}
+        addRecipeToSpell={(recipe) => {
+          setSelectedIngredients([...selectedIngredients, ...recipe.ingredients]);
+          setSelectedIncantations([...selectedIncantations, ...recipe.incantations]);
+          setShowRecipesModal(false);
+          toast.success(`Recipe "${recipe.name}" added to cauldron`, toastOptions);
+        }}
+        toastOptions={toastOptions}
+      />
     </div>
   );
 }

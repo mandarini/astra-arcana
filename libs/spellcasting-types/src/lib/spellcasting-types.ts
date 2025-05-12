@@ -14,6 +14,13 @@ export type Incantation = {
   moonphase?: MoonPhase;
 };
 
+export type Recipe = {
+  name: string;
+  origin: string;
+  ingredients: Ingredient[];
+  incantations: Incantation[];
+};
+
 export type Language =
   | 'English'
   | 'Spanish'
