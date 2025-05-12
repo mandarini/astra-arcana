@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from 'react';
+import { Ingredient, Incantation } from '@astra-arcana/spellcasting-types';
 import logo from '../assets/astra-arcana-logo.png';
 import textLogo from '../assets/astra-arcana-text.png';
 import founderPic from '../assets/founder-astra.png';
@@ -8,10 +9,10 @@ import founderPic from '../assets/founder-astra.png';
 type ItemType = 'ingredient' | 'incantation';
 
 export function App() {
-  const [ingredients, setIngredients] = useState<string[]>([]);
-  const [incantations, setIncantations] = useState<string[]>([]);
-  const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
-  const [selectedIncantations, setSelectedIncantations] = useState<string[]>([]);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [incantations, setIncantations] = useState<Incantation[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>([]);
+  const [selectedIncantations, setSelectedIncantations] = useState<Incantation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
@@ -20,9 +21,10 @@ export function App() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Assuming the API is running on port 8787 (Cloudflare Workers default)
-        const ingredientsResponse = await fetch('http://localhost:8787/api/ingredients');
-        const incantationsResponse = await fetch('http://localhost:8787/api/incantations');
+        // Use the environment variable for API URL
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8787';
+        const ingredientsResponse = await fetch(`${apiUrl}/api/ingredients`);
+        const incantationsResponse = await fetch(`${apiUrl}/api/incantations`);
         
         if (!ingredientsResponse.ok || !incantationsResponse.ok) {
           throw new Error('Failed to fetch data from API');
@@ -45,16 +47,16 @@ export function App() {
   }, []);
 
 
-  const handleIngredientClick = (ingredient: string) => {
+  const handleIngredientClick = (ingredient: Ingredient) => {
     setSelectedIngredients([...selectedIngredients, ingredient]);
   };
 
-  const handleIncantationClick = (incantation: string) => {
+  const handleIncantationClick = (incantation: Incantation) => {
     setSelectedIncantations([...selectedIncantations, incantation]);
   };
   
   // Simplified drag and drop handlers
-  const onDragStart = (e: React.DragEvent, content: string, itemType: ItemType) => {
+  const onDragStart = (e: React.DragEvent, content: Ingredient | Incantation, itemType: ItemType) => {
     // Store the dragged item and its type as a JSON string
     const data = JSON.stringify({ content, itemType });
     e.dataTransfer.setData('application/json', data);
@@ -92,9 +94,9 @@ export function App() {
       
       // Add to the appropriate list
       if (itemType === 'ingredient') {
-        setSelectedIngredients(prev => [...prev, content]);
+        setSelectedIngredients(prev => [...prev, content as Ingredient]);
       } else if (itemType === 'incantation') {
-        setSelectedIncantations(prev => [...prev, content]);
+        setSelectedIncantations(prev => [...prev, content as Incantation]);
       }
     } catch (error) {
       console.error('Error processing drop:', error);
@@ -110,17 +112,27 @@ export function App() {
   };
 
   // Count occurrences of ingredients and incantations in the cauldron
-  const countIngredients = selectedIngredients.reduce<Record<string, number>>(
+  const countIngredients = selectedIngredients.reduce<Record<string, { count: number, item: Ingredient }>>(
     (acc, ingredient) => {
-      acc[ingredient] = (acc[ingredient] || 0) + 1;
+      const key = ingredient.name;
+      if (!acc[key]) {
+        acc[key] = { count: 1, item: ingredient };
+      } else {
+        acc[key].count += 1;
+      }
       return acc;
     },
     {}
   );
 
-  const countIncantations = selectedIncantations.reduce<Record<string, number>>(
+  const countIncantations = selectedIncantations.reduce<Record<string, { count: number, item: Incantation }>>(
     (acc, incantation) => {
-      acc[incantation] = (acc[incantation] || 0) + 1;
+      const key = incantation.name;
+      if (!acc[key]) {
+        acc[key] = { count: 1, item: incantation };
+      } else {
+        acc[key].count += 1;
+      }
       return acc;
     },
     {}
@@ -175,9 +187,9 @@ export function App() {
                   onClick={() => handleIngredientClick(ingredient)}
                   onDragStart={(e) => onDragStart(e, ingredient, 'ingredient')}
                   onDragEnd={onDragEnd}
-                  className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
+                  className="bg-green-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-green-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
                 >
-                  {ingredient}
+                  {ingredient.name}
                 </button>
               ))
             ) : (
@@ -202,7 +214,7 @@ export function App() {
                   onDragEnd={onDragEnd}
                   className="bg-pink-200 text-gray-800 py-3 px-4 rounded-full text-lg font-semibold transition-all hover:bg-pink-300 active:scale-95 text-center cursor-grab active:cursor-grabbing"
                 >
-                  {incantation}
+                  {incantation.name}
                 </button>
               ))
             ) : (
@@ -229,9 +241,9 @@ export function App() {
                   <div>
                     <h3 className="text-sm font-medium text-purple-300">Ingredients:</h3>
                     <ul className="ml-2">
-                      {Object.entries(countIngredients).map(([ingredient, count], index) => (
+                      {Object.entries(countIngredients).map(([name, { count, item }], index) => (
                         <li key={`ing-${index}`} className="text-pink-200">
-                          {ingredient} {count > 1 && <span className="text-xs bg-purple-700 px-1.5 py-0.5 rounded-full ml-1">x{count}</span>}
+                          {name} {count > 1 && <span className="text-xs bg-purple-700 px-1.5 py-0.5 rounded-full ml-1">x{count}</span>}
                         </li>
                       ))}
                     </ul>
@@ -241,9 +253,9 @@ export function App() {
                   <div>
                     <h3 className="text-sm font-medium text-purple-300">Incantations:</h3>
                     <ul className="ml-2">
-                      {Object.entries(countIncantations).map(([incantation, count], index) => (
+                      {Object.entries(countIncantations).map(([name, { count, item }], index) => (
                         <li key={`inc-${index}`} className="text-pink-200">
-                          {incantation} {count > 1 && <span className="text-xs bg-purple-700 px-1.5 py-0.5 rounded-full ml-1">x{count}</span>}
+                          {name} {count > 1 && <span className="text-xs bg-purple-700 px-1.5 py-0.5 rounded-full ml-1">x{count}</span>}
                         </li>
                       ))}
                     </ul>
