@@ -1,4 +1,12 @@
-import { Ingredient, Incantation, Recipe, Element, Age, Language, MoonPhase } from '@astra-arcana/spellcasting-types';
+import {
+  Ingredient,
+  Incantation,
+  Recipe,
+  Element,
+  Age,
+  Language,
+  MoonPhase,
+} from '@astra-arcana/spellcasting-types';
 import { defaultIngredients, defaultIncantations } from './default-data';
 import { defaultRecipes } from './default-recipes';
 
@@ -6,6 +14,17 @@ import { defaultRecipes } from './default-recipes';
 const ingredients = defaultIngredients;
 const incantations = defaultIncantations;
 const recipes = defaultRecipes;
+
+// In-memory storage for spell cast logs
+interface SpellCastLog {
+  timestamp: string;
+  ingredients: Ingredient[];
+  incantations: Incantation[];
+  success: boolean;
+  message: string;
+}
+
+const spellCastLogs: SpellCastLog[] = [];
 
 /**
  * Interface for the application environment
@@ -55,12 +74,29 @@ export default {
         };
         const { ingredients = [], incantations = [] } = data;
 
-        // For now, always return success
+        const timestamp = new Date().toISOString();
+        const success = true;
+        const message = 'Spell cast successfully!';
+
+        // Log the spell cast in memory
+        spellCastLogs.push({
+          timestamp,
+          ingredients,
+          incantations,
+          success,
+          message,
+        });
+
+        // Limit logs to the most recent 100 entries
+        if (spellCastLogs.length > 100) {
+          spellCastLogs.shift(); // Remove the oldest entry
+        }
+
         return new Response(
           JSON.stringify({
-            success: true,
-            message: 'Spell cast successfully!',
-            timestamp: new Date().toISOString(),
+            success,
+            message,
+            timestamp,
             details: {
               ingredients_count: ingredients?.length || 0,
               incantations_count: incantations?.length || 0,
@@ -102,25 +138,26 @@ export default {
     if (path === '/api/ingredients') {
       // Get filter parameters from query string
       const params = url.searchParams;
-      
+
       // Extract filter parameters relevant to ingredients
       const name = params.get('name')?.toLowerCase();
       const affinity = params.get('affinity');
       const age = params.get('age');
-      
+
       // Apply filters if any parameters are provided
       let results = ingredients;
       if (name || affinity || age) {
-        results = ingredients.filter(ingredient => {
+        results = ingredients.filter((ingredient) => {
           // Check each filter condition
-          if (name && !ingredient.name.toLowerCase().includes(name)) return false;
+          if (name && !ingredient.name.toLowerCase().includes(name))
+            return false;
           if (affinity && ingredient.affinity !== affinity) return false;
           if (age && ingredient.age !== age) return false;
-          
+
           return true; // Include if passes all filters
         });
       }
-      
+
       return new Response(JSON.stringify(results), {
         headers: {
           'Content-Type': 'application/json',
@@ -130,29 +167,30 @@ export default {
     } else if (path === '/api/incantations') {
       // Get filter parameters from query string
       const params = url.searchParams;
-      
+
       // Extract filter parameters relevant to incantations
       const name = params.get('name')?.toLowerCase();
       const affinity = params.get('affinity');
       const language = params.get('language');
       const kind = params.get('kind');
       const moonphase = params.get('moonphase');
-      
+
       // Apply filters if any parameters are provided
       let results = incantations;
       if (name || affinity || language || kind || moonphase) {
-        results = incantations.filter(incantation => {
+        results = incantations.filter((incantation) => {
           // Check each filter condition
-          if (name && !incantation.name.toLowerCase().includes(name)) return false;
+          if (name && !incantation.name.toLowerCase().includes(name))
+            return false;
           if (affinity && incantation.affinity !== affinity) return false;
           if (language && incantation.language !== language) return false;
           if (kind && incantation.kind !== kind) return false;
           if (moonphase && incantation.moonphase !== moonphase) return false;
-          
+
           return true; // Include if passes all filters
         });
       }
-      
+
       return new Response(JSON.stringify(results), {
         headers: {
           'Content-Type': 'application/json',
@@ -167,15 +205,25 @@ export default {
           ...corsHeaders,
         },
       });
+    } else if (path === '/api/spell-logs') {
+      // Return the spell cast logs
+      return new Response(JSON.stringify(spellCastLogs), {
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders,
+        },
+      });
     } else if (path === '/' || path === '/api') {
       return new Response(
         JSON.stringify({
           message: 'Welcome to the Astra Arcana API',
           endpoints: {
             ingredients: '/api/ingredients?name=...&affinity=...&age=...',
-            incantations: '/api/incantations?name=...&affinity=...&language=...&kind=...&moonphase=...',
+            incantations:
+              '/api/incantations?name=...&affinity=...&language=...&kind=...&moonphase=...',
             recipes: '/api/recipes',
             cast: '/api/cast',
+            spellLogs: '/api/spell-logs',
           },
         }),
         {

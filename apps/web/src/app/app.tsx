@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
-import { Ingredient, Incantation, Recipe } from '@astra-arcana/spellcasting-types';
+import {
+  Ingredient,
+  Incantation,
+  Recipe,
+} from '@astra-arcana/spellcasting-types';
 import { RecipeModal } from './RecipeModal';
-import { SpellcastingSDK } from '@astra-arcana/typescript-sdk';
+import { LogsModal } from './LogsModal';
+import { SpellcastingSDK, SpellCastLog } from '@astra-arcana/typescript-sdk';
 import { ToastContainer, toast, ToastPosition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import logo from '../assets/astra-arcana-logo.png';
 import textLogo from '../assets/astra-arcana-text.png';
 import founderPic from '../assets/founder-astra.png';
 
@@ -15,6 +19,7 @@ export function App() {
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [incantations, setIncantations] = useState<Incantation[]>([]);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [spellLogs, setSpellLogs] = useState<SpellCastLog[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
     []
   );
@@ -25,6 +30,8 @@ export function App() {
   const [error, setError] = useState<string | null>(null);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [showRecipesModal, setShowRecipesModal] = useState(false);
+  const [showLogsModal, setShowLogsModal] = useState(false);
+  const [logsLoading, setLogsLoading] = useState(false);
 
   // Initialize the SDK with the API URL from environment variable
   const sdk = new SpellcastingSDK(
@@ -37,11 +44,12 @@ export function App() {
         setLoading(true);
 
         // Use the SDK to fetch ingredients, incantations, and recipes
-        const [ingredientsData, incantationsData, recipesData] = await Promise.all([
-          sdk.getIngredients(),
-          sdk.getIncantations(),
-          sdk.getRecipes(),
-        ]);
+        const [ingredientsData, incantationsData, recipesData] =
+          await Promise.all([
+            sdk.getIngredients(),
+            sdk.getIncantations(),
+            sdk.getRecipes(),
+          ]);
 
         setIngredients(ingredientsData);
         setIncantations(incantationsData);
@@ -58,6 +66,30 @@ export function App() {
 
     fetchData();
   }, []);
+
+  // Function to fetch spell logs
+  const fetchSpellLogs = async () => {
+    try {
+      setLogsLoading(true);
+      const logs = await sdk.getSpellLogs();
+      setSpellLogs(logs);
+    } catch (err) {
+      console.error('Error fetching spell logs:', err);
+      toast.error(
+        err instanceof Error ? err.message : 'Failed to fetch spell logs',
+        toastOptions
+      );
+    } finally {
+      setLogsLoading(false);
+    }
+  };
+
+  // Fetch logs when the logs modal is opened
+  useEffect(() => {
+    if (showLogsModal) {
+      fetchSpellLogs();
+    }
+  }, [showLogsModal]);
 
   const handleIngredientClick = (ingredient: Ingredient) => {
     setSelectedIngredients([...selectedIngredients, ingredient]);
@@ -118,7 +150,7 @@ export function App() {
       console.error('Error processing drop:', error);
     }
   };
-  
+
   // Function to clear the cauldron
   const clearCauldron = () => {
     setSelectedIngredients([]);
@@ -140,48 +172,64 @@ export function App() {
   };
 
   const handleCastSpell = async () => {
-    try {
-      console.log('Casting spell with ingredients:', selectedIngredients);
-      console.log('and incantations:', selectedIncantations);
-
-      // Use the SDK to cast the spell
-      const result = await sdk.castSpell(
-        selectedIngredients,
-        selectedIncantations
-      );
-      console.log('Spell cast result:', result);
-
-      // Show success toast
-      toast.success(`✨ ${result.message || 'Spell cast successfully!'}`, {
-        ...toastOptions,
-        icon: () => (
-          <span role="img" aria-label="magic">
-            🔮
-          </span>
-        ),
-        className: 'magical-toast-success',
-      });
-
-      // Reset selections after casting
-      setSelectedIngredients([]);
-      setSelectedIncantations([]);
-    } catch (err) {
-      console.error('Error casting spell:', err);
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : 'An unknown error occurred during spell casting';
-      setError(errorMessage);
-      toast.error(`❌ ${errorMessage}`, {
-        ...toastOptions,
-        icon: () => (
-          <span role="img" aria-label="explosion">
-            💥
-          </span>
-        ),
-        className: 'magical-toast-error',
-      });
+    if (selectedIngredients.length === 0 && selectedIncantations.length === 0) {
+      return;
     }
+
+    try {
+      // Call the SDK to cast the spell
+      await sdk.castSpell(selectedIngredients, selectedIncantations);
+
+      // Celebrate with a success notification
+      toast.success(
+        <div className="text-center">
+          <p className="text-lg font-bold mb-1">
+            ✨ Spell Cast Successfully! ✨
+          </p>
+          <p>
+            Combined {selectedIngredients.length} ingredients and{' '}
+            {selectedIncantations.length} incantations
+          </p>
+        </div>,
+        {
+          ...toastOptions,
+          icon: () => (
+            <div className="bg-purple-700 rounded-full p-2 text-2xl">🔮</div>
+          ),
+          progressClassName: 'bg-pink-500',
+        }
+      );
+    } catch (error) {
+      // Show error notification
+      toast.error(
+        <div className="text-center">
+          <p className="text-lg font-bold mb-1">❌ Spell Failed! ❌</p>
+          <p>
+            {error instanceof Error
+              ? error.message
+              : 'An unexpected error occurred'}
+          </p>
+        </div>,
+        {
+          ...toastOptions,
+          icon: () => (
+            <div className="bg-red-700 rounded-full p-2 text-2xl">💥</div>
+          ),
+          progressClassName: 'bg-red-500',
+        }
+      );
+      console.error('Error casting spell:', error);
+      return;
+    }
+
+    // Refresh spell logs if the logs modal is open
+    if (showLogsModal) {
+      fetchSpellLogs();
+    }
+
+    // Reset selections after casting
+    setSelectedIngredients([]);
+    setSelectedIncantations([]);
   };
 
   // Count occurrences of ingredients and incantations in the cauldron
@@ -226,12 +274,12 @@ export function App() {
       />
       <header className="flex items-center justify-between mb-8 p-4 border-b border-purple-800 h-[100px]">
         <div className="flex items-center">
-          {/* Logo */}
           <img
-            src={logo}
-            alt="Astra Arcana Logo"
-            className="w-16 h-16 mr-4 object-contain"
+            src={founderPic}
+            alt="Astra the Founder"
+            className="w-14 h-14 rounded-full border-2 border-purple-400 shadow-glow"
           />
+
           <div>
             <img src={textLogo} alt="ASTRA ARCANA" className="h-10 mb-1" />
             <p className="text-purple-300 italic ml-2">
@@ -239,13 +287,35 @@ export function App() {
             </p>
           </div>
         </div>
-        {/* Founder profile picture */}
+        <div className="flex items-center">
+
+        <button
+          onClick={() => setShowLogsModal(true)}
+          className="mr-4 bg-purple-800 hover:bg-purple-700 text-pink-200 py-2 px-3 rounded-lg text-sm flex items-center transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-4 w-4 mr-1"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+              clipRule="evenodd"
+            />
+          </svg>
+          View Logs
+        </button>
         <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500">
+          {/* Founder profile picture */}
+
           <img
             src={founderPic}
             alt="Founder Astra"
             className="w-full h-full object-cover"
           />
+        </div>
         </div>
       </header>
 
@@ -345,7 +415,7 @@ export function App() {
             >
               <span className="mr-2">📚</span> View Recipes
             </button>
-            
+
             {/* Empty cauldron area with dashed border */}
             <div
               onDragOver={onDragOver}
@@ -358,14 +428,24 @@ export function App() {
               } rounded-lg p-4 mb-4 min-h-40 transition-colors duration-200 relative`}
             >
               {/* Clear button (only visible when there are items) */}
-              {(selectedIngredients.length > 0 || selectedIncantations.length > 0) && (
+              {(selectedIngredients.length > 0 ||
+                selectedIncantations.length > 0) && (
                 <button
                   onClick={clearCauldron}
                   className="absolute top-2 right-2 bg-purple-700 hover:bg-purple-800 text-pink-200 rounded-full p-1.5 shadow-lg transition-all hover:scale-105 active:scale-95 z-10"
                   title="Clear cauldron"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </button>
               )}
@@ -436,20 +516,37 @@ export function App() {
           </button>
         </div>
       </div>
-      
+
       {/* Recipe Modal Portal */}
-      <RecipeModal 
+      <RecipeModal
         isOpen={showRecipesModal}
         onClose={() => setShowRecipesModal(false)}
         recipes={recipes}
         loading={loading}
         addRecipeToSpell={(recipe) => {
-          setSelectedIngredients([...selectedIngredients, ...recipe.ingredients]);
-          setSelectedIncantations([...selectedIncantations, ...recipe.incantations]);
+          setSelectedIngredients([
+            ...selectedIngredients,
+            ...recipe.ingredients,
+          ]);
+          setSelectedIncantations([
+            ...selectedIncantations,
+            ...recipe.incantations,
+          ]);
           setShowRecipesModal(false);
-          toast.success(`Recipe "${recipe.name}" added to cauldron`, toastOptions);
+          toast.success(
+            `Recipe "${recipe.name}" added to cauldron`,
+            toastOptions
+          );
         }}
         toastOptions={toastOptions}
+      />
+
+      {/* Logs Modal Portal */}
+      <LogsModal
+        isOpen={showLogsModal}
+        onClose={() => setShowLogsModal(false)}
+        logs={spellLogs}
+        loading={logsLoading}
       />
     </div>
   );

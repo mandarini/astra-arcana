@@ -1,4 +1,21 @@
-import { Ingredient, Incantation, Recipe, Element, Age, Language, MoonPhase } from '@astra-arcana/spellcasting-types';
+import {
+  Ingredient,
+  Incantation,
+  Recipe,
+  Element,
+  Age,
+  Language,
+  MoonPhase,
+} from '@astra-arcana/spellcasting-types';
+
+// Interface for spell cast logs
+export interface SpellCastLog {
+  timestamp: string;
+  ingredients: Ingredient[];
+  incantations: Incantation[];
+  success: boolean;
+  message: string;
+}
 
 // Interface for filter options
 export interface FilterOptions {
@@ -38,22 +55,24 @@ export class SpellcastingSDK {
    * @param options Filter options like name, affinity, and age
    * @returns Filtered or all ingredients
    */
-  async getIngredients(options?: Pick<FilterOptions, 'name' | 'affinity' | 'age'>): Promise<Ingredient[]> {
+  async getIngredients(
+    options?: Pick<FilterOptions, 'name' | 'affinity' | 'age'>
+  ): Promise<Ingredient[]> {
     try {
       let url = `${this.apiUrl}/api/ingredients`;
-      
+
       // Add filter parameters if options are provided
       if (options) {
         const params = new URLSearchParams();
         if (options.name) params.append('name', options.name);
         if (options.affinity) params.append('affinity', options.affinity);
         if (options.age) params.append('age', options.age);
-        
+
         if (params.toString()) {
           url += `?${params.toString()}`;
         }
       }
-      
+
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -73,10 +92,15 @@ export class SpellcastingSDK {
    * @param options Filter options like name, affinity, language, kind, and moonphase
    * @returns Filtered or all incantations
    */
-  async getIncantations(options?: Pick<FilterOptions, 'name' | 'affinity' | 'language' | 'kind' | 'moonphase'>): Promise<Incantation[]> {
+  async getIncantations(
+    options?: Pick<
+      FilterOptions,
+      'name' | 'affinity' | 'language' | 'kind' | 'moonphase'
+    >
+  ): Promise<Incantation[]> {
     try {
       let url = `${this.apiUrl}/api/incantations`;
-      
+
       // Add filter parameters if options are provided
       if (options) {
         const params = new URLSearchParams();
@@ -85,12 +109,12 @@ export class SpellcastingSDK {
         if (options.language) params.append('language', options.language);
         if (options.kind) params.append('kind', options.kind);
         if (options.moonphase) params.append('moonphase', options.moonphase);
-        
+
         if (params.toString()) {
           url += `?${params.toString()}`;
         }
       }
-      
+
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -131,11 +155,11 @@ export class SpellcastingSDK {
    */
   async findIngredientByName(name: string): Promise<Ingredient> {
     const ingredients = await this.getIngredients({ name });
-    
+
     if (ingredients.length === 0) {
       throw new IngredientError(`Ingredient not found: ${name}`);
     }
-    
+
     return ingredients[0];
   }
 
@@ -146,11 +170,11 @@ export class SpellcastingSDK {
    */
   async findIncantationByName(name: string): Promise<Incantation> {
     const incantations = await this.getIncantations({ name });
-    
+
     if (incantations.length === 0) {
       throw new IncantationError(`Incantation not found: ${name}`);
     }
-    
+
     return incantations[0];
   }
 
@@ -165,25 +189,29 @@ export class SpellcastingSDK {
       // Get all ingredients first for efficiency (single API call)
       const allIngredients = await this.getIngredients();
       const resolvedIngredients: Ingredient[] = [];
-      
+
       for (const name of ingredientNames) {
-        const ingredient = allIngredients.find(i => 
-          i.name.toLowerCase() === name.toLowerCase()
+        const ingredient = allIngredients.find(
+          (i) => i.name.toLowerCase() === name.toLowerCase()
         );
-        
+
         if (!ingredient) {
           throw new IngredientError(`Invalid ingredient: "${name}" not found`);
         }
-        
+
         resolvedIngredients.push(ingredient);
       }
-      
+
       return resolvedIngredients;
     } catch (error) {
       if (error instanceof IngredientError) {
         throw error;
       }
-      throw new IngredientError(`Error validating ingredients: ${error instanceof Error ? error.message : String(error)}`);
+      throw new IngredientError(
+        `Error validating ingredients: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   }
 
@@ -193,30 +221,38 @@ export class SpellcastingSDK {
    * @returns Array of validated incantation objects
    * @throws IncantationError if any incantation is not found
    */
-  async validateIncantations(incantationNames: string[]): Promise<Incantation[]> {
+  async validateIncantations(
+    incantationNames: string[]
+  ): Promise<Incantation[]> {
     try {
       // Get all incantations first for efficiency (single API call)
       const allIncantations = await this.getIncantations();
       const resolvedIncantations: Incantation[] = [];
-      
+
       for (const name of incantationNames) {
-        const incantation = allIncantations.find(i => 
-          i.name.toLowerCase() === name.toLowerCase()
+        const incantation = allIncantations.find(
+          (i) => i.name.toLowerCase() === name.toLowerCase()
         );
-        
+
         if (!incantation) {
-          throw new IncantationError(`Invalid incantation: "${name}" not found`);
+          throw new IncantationError(
+            `Invalid incantation: "${name}" not found`
+          );
         }
-        
+
         resolvedIncantations.push(incantation);
       }
-      
+
       return resolvedIncantations;
     } catch (error) {
       if (error instanceof IncantationError) {
         throw error;
       }
-      throw new IncantationError(`Error validating incantations: ${error instanceof Error ? error.message : String(error)}`);
+      throw new IncantationError(
+        `Error validating incantations: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
     }
   }
 
@@ -232,19 +268,23 @@ export class SpellcastingSDK {
       // Validate and convert if strings were provided
       let validIngredients: Ingredient[];
       let validIncantations: Incantation[];
-      
+
       if (ingredients.length > 0 && typeof ingredients[0] === 'string') {
-        validIngredients = await this.validateIngredients(ingredients as string[]);
+        validIngredients = await this.validateIngredients(
+          ingredients as string[]
+        );
       } else {
         validIngredients = ingredients as Ingredient[];
       }
-      
+
       if (incantations.length > 0 && typeof incantations[0] === 'string') {
-        validIncantations = await this.validateIncantations(incantations as string[]);
+        validIncantations = await this.validateIncantations(
+          incantations as string[]
+        );
       } else {
         validIncantations = incantations as Incantation[];
       }
-      
+
       const response = await fetch(`${this.apiUrl}/api/cast`, {
         method: 'POST',
         headers: {
@@ -267,6 +307,26 @@ export class SpellcastingSDK {
       throw error;
     }
   }
-  
+
+  /**
+   * Retrieves the spell cast logs from the API
+   * @returns Array of spell cast logs
+   */
+  async getSpellLogs(): Promise<SpellCastLog[]> {
+    try {
+      const response = await fetch(`${this.apiUrl}/api/spell-logs`);
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch spell logs: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data as SpellCastLog[];
+    } catch (error) {
+      console.error('Error fetching spell logs:', error);
+      throw error;
+    }
+  }
+
   // Filter method removed as requested
 }
