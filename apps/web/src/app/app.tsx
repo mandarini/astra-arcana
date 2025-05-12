@@ -118,6 +118,13 @@ export function App() {
       console.error('Error processing drop:', error);
     }
   };
+  
+  // Function to clear the cauldron
+  const clearCauldron = () => {
+    setSelectedIngredients([]);
+    setSelectedIncantations([]);
+    toast.info('Cauldron cleared', toastOptions);
+  };
 
   // Configure toast options
   const toastOptions = {
@@ -348,8 +355,20 @@ export function App() {
                 isDraggedOver
                   ? 'border-pink-400 bg-purple-900/30'
                   : 'border-blue-500'
-              } rounded-lg p-4 mb-4 min-h-40 transition-colors duration-200`}
+              } rounded-lg p-4 mb-4 min-h-40 transition-colors duration-200 relative`}
             >
+              {/* Clear button (only visible when there are items) */}
+              {(selectedIngredients.length > 0 || selectedIncantations.length > 0) && (
+                <button
+                  onClick={clearCauldron}
+                  className="absolute top-2 right-2 bg-purple-700 hover:bg-purple-800 text-pink-200 rounded-full p-1.5 shadow-lg transition-all hover:scale-105 active:scale-95 z-10"
+                  title="Clear cauldron"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              )}
               {selectedIngredients.length > 0 ||
               selectedIncantations.length > 0 ? (
                 <div className="space-y-2">
