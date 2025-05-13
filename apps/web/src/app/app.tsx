@@ -10,6 +10,7 @@ import { SpellcastingSDK, SpellCastLog } from '@astra-arcana/typescript-sdk';
 import { ToastContainer, toast, ToastPosition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import textLogo from '../assets/astra-arcana-text.png';
+import logo from '../assets/astra-arcana-logo.png';
 import founderPic from '../assets/founder-astra.png';
 
 // Define types for our drag items
@@ -274,10 +275,10 @@ export function App() {
       />
       <header className="flex items-center justify-between mb-8 p-4 border-b border-purple-800 h-[100px]">
         <div className="flex items-center">
-          <img
-            src={founderPic}
-            alt="Astra the Founder"
-            className="w-14 h-14 rounded-full border-2 border-purple-400 shadow-glow"
+        <img
+            src={logo}
+            alt="Astra Arcana Logo"
+            className="w-16 h-16 mr-4 object-contain"
           />
 
           <div>
@@ -309,7 +310,6 @@ export function App() {
         </button>
         <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500">
           {/* Founder profile picture */}
-
           <img
             src={founderPic}
             alt="Founder Astra"
