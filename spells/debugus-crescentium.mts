@@ -11,6 +11,8 @@ const [ingredients, incantations] = await Promise.all([
   sdk.getIncantations({ affinity: 'fire' }),
 ]);
 
+await sdk.castSpell(ingredients, incantations);
+
 // returns the current moon phase as a percentage
 async function getMoonphase(): Promise<number> {
   const timestamp = Math.floor(Date.now() / 1000);

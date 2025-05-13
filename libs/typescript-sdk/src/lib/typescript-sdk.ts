@@ -46,7 +46,9 @@ export class IncantationError extends Error {
 export class SpellcastingSDK {
   private apiUrl: string;
 
-  constructor(apiUrl: string = 'http://localhost:18787') {
+  constructor(
+    apiUrl: string = 'https://astra-arcana-api.maxk-835.workers.dev'
+  ) {
     this.apiUrl = apiUrl;
   }
 
