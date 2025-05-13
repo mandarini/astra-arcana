@@ -4,22 +4,37 @@
   "private": true,
   "nx": {
     "name": "api",
+    "sourceRoot": "src",
     "targets": {
-      "cf-typegen": "wrangler types",
+      "cf-typegen": {
+        "command": "wrangler types",
+        "options": {
+          "cwd": "apps/api"
+        }
+      },
       "build": {
         "command": "wrangler deploy --dry-run --outdir=dist",
+        "options": {
+          "cwd": "apps/api"
+        },
         "dependsOn": [
           "cf-typegen"
         ]
       },
       "deploy": {
         "command": "wrangler deploy",
+        "options": {
+          "cwd": "apps/api"
+        },
         "dependsOn": [
           "build"
         ]
       },
       "dev": {
         "command": "wrangler dev",
+        "options": {
+          "cwd": "apps/api"
+        },
         "continuous": true,
         "dependsOn": [
           "cf-typegen"

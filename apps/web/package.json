@@ -15,8 +15,11 @@
       },
       "deploy": {
         "command": "wrangler pages deploy dist",
+        "options": {
+          "cwd": "apps/web"
+        },
         "dependsOn": [
-          "build",
+         "build",
           "^deploy"
         ]
       },

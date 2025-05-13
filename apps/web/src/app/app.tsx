@@ -35,7 +35,7 @@ export function App() {
 
   // Initialize the SDK with the API URL from environment variable
   const sdk = new SpellcastingSDK(
-    import.meta.env.VITE_API_URL || 'http://localhost:8787'
+    import.meta.env.VITE_API_URL || 'http://localhost:18787'
   );
 
   useEffect(() => {
@@ -335,7 +335,7 @@ export function App() {
           <p>{error}</p>
           <p className="mt-2">
             Make sure the API is running on{' '}
-            {import.meta.env.VITE_API_URL || 'http://localhost:8787'}
+            {import.meta.env.VITE_API_URL || 'http://localhost:18787'}
           </p>
         </div>
       )}

@@ -1,7 +1,7 @@
 import { createPortal } from 'react-dom';
 import { Recipe } from '@astra-arcana/spellcasting-types';
 import { ToastOptions } from 'react-toastify';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 interface RecipeModalProps {
   isOpen: boolean;
@@ -115,7 +115,7 @@ function RecipeCard({ recipe, onAddToSpell }: RecipeCardProps) {
             {recipe.ingredients.map((ingredient, idx) => (
               <li key={`ing-${idx}`} className="text-pink-200 text-sm flex items-center">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-pink-400 mr-2 opacity-70"></span>
-                {ingredient.name}
+                {ingredient?.name || 'Unknown ingredient'}
               </li>
             ))}
           </ul>
@@ -128,7 +128,7 @@ function RecipeCard({ recipe, onAddToSpell }: RecipeCardProps) {
             {recipe.incantations.map((incantation, idx) => (
               <li key={`inc-${idx}`} className="text-pink-200 text-sm flex items-center">
                 <span className="inline-block h-1.5 w-1.5 rounded-full bg-pink-400 mr-2 opacity-70"></span>
-                {incantation.name}
+                {incantation?.name || 'Unknown incantation'}
               </li>
             ))}
           </ul>
