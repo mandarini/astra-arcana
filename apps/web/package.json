@@ -16,7 +16,8 @@
       "deploy": {
         "command": "wrangler pages deploy dist",
         "dependsOn": [
-          "build"
+          "build",
+          "^deploy"
         ]
       },
       "dev": {

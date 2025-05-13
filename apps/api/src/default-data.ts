@@ -105,7 +105,7 @@ export const defaultIncantations: Incantation[] = [
     moonphase: 'waning' as MoonPhase,
   },
   {
-    name: 'Wingardium Leviosa',
+    name: 'Recursion Reversa',
     language: 'Latin' as Language,
     affinity: 'air' as Element,
     kind: 'spell',
