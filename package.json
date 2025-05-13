@@ -2,7 +2,9 @@
   "name": "@astra-arcana/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "deploy": "nx run-many --target=deploy --projects=api,web"
+  },
   "private": true,
   "dependencies": {
     "react": "19.0.0",

@@ -1,13 +1,24 @@
 {
   "name": "@astra-arcana/web",
   "version": "0.0.1",
-  "private": true,
+  "private": true, 
   "nx": {
     "name": "web",
     "implicitDependencies": [
       "api"
     ],
     "targets": {
+      "build": {
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "deploy": {
+        "command": "wrangler pages deploy dist",
+        "dependsOn": [
+          "build"
+        ]
+      },
       "dev": {
         "continuous": true,
         "dependsOn": [
