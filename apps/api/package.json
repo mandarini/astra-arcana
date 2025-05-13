@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@astra-arcana/api",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,7 @@
     "cf-typegen": "wrangler types"
   },
   "nx": {
+    "name": "api",
     "targets": {
       "dev": {
         "continuous": true,
