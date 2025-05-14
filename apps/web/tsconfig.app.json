@@ -35,7 +35,7 @@
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
   "references": [
     {
-      "path": "../../libs/typescript-sdk/tsconfig.lib.json"
+      "path": "../../libs/spellcasting-sdk/tsconfig.lib.json"
     },
     {
       "path": "../../libs/spellcasting-types/tsconfig.lib.json"

@@ -7,10 +7,10 @@
       "path": "./libs/spellcasting-types"
     },
     {
-      "path": "./libs/typescript-sdk"
+      "path": "./apps/web"
     },
     {
-      "path": "./apps/web"
+      "path": "./libs/spellcasting-sdk"
     }
   ]
 }

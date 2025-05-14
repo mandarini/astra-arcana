@@ -6,7 +6,7 @@ import {
 } from '@astra-arcana/spellcasting-types';
 import { RecipeModal } from './RecipeModal';
 import { LogsModal } from './LogsModal';
-import { SpellcastingSDK, SpellCastLog } from '@astra-arcana/typescript-sdk';
+import { SpellcastingSDK, SpellCastLog } from '@astra-arcana/spellcasting-sdk';
 import { ToastContainer, toast, ToastPosition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import textLogo from '../assets/astra-arcana-text.png';

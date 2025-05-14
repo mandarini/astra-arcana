@@ -1,13 +1,5 @@
-import {
-  Ingredient,
-  Incantation,
-  Recipe,
-  Element,
-  Age,
-  Language,
-  MoonPhase,
-} from '@astra-arcana/spellcasting-types';
-import { defaultIngredients, defaultIncantations } from './default-data';
+import { Incantation, Ingredient } from '@astra-arcana/spellcasting-types';
+import { defaultIncantations, defaultIngredients } from './default-data';
 import { defaultRecipes } from './default-recipes';
 
 // Use the default data from the separate files

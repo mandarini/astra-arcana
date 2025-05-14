@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createPortal } from 'react-dom';
-import { SpellCastLog } from '@astra-arcana/typescript-sdk';
+import { SpellCastLog } from '@astra-arcana/spellcasting-sdk';
 
 interface LogsModalProps {
   isOpen: boolean;

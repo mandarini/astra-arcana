@@ -1,4 +1,4 @@
-import { SpellcastingSDK } from '@astra-arcana/typescript-sdk';
+import { SpellcastingSDK } from '@astra-arcana/spellcasting-sdk';
 
 const moonphase = await getMoonphase();
 console.log(moonphase);
