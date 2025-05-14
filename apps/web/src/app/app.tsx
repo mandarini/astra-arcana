@@ -343,7 +343,7 @@ export function App() {
       {/* Main content grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Ingredients column */}
-        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-170px)]">
+        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-200px)]">
           <h2 className="text-2xl font-semibold py-4 px-4 text-purple-200 text-center sticky top-0 bg-gray-800 z-10">
             Ingredients
           </h2>
@@ -372,7 +372,7 @@ export function App() {
         </div>
 
         {/* Incantations column */}
-        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-170px)]">
+        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-200px)]">
           <h2 className="text-2xl font-semibold py-4 px-4 text-purple-200 text-center sticky top-0 bg-gray-800 z-10">
             Incantations
           </h2>
@@ -403,7 +403,7 @@ export function App() {
         </div>
 
         {/* Cauldron area */}
-        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-170px)]">
+        <div className="bg-gray-800 rounded-lg shadow-md flex flex-col h-[calc(100vh-200px)]">
           <h2 className="text-2xl font-semibold py-4 px-4 text-purple-200 text-center sticky top-0 bg-gray-800 z-10">
             Cauldron
           </h2>
@@ -548,6 +548,13 @@ export function App() {
         logs={spellLogs}
         loading={logsLoading}
       />
+      
+      {/* Footer */}
+      <footer className="w-full py-2 mt-4 border-t border-purple-800 text-center">
+        <div className="container mx-auto px-4 text-xs text-purple-400">
+          &copy; Astra Moonlace, 2025 | <a href="https://github.com/maxkless/astra-arcana" className="text-purple-500 hover:text-purple-300" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </div>
+      </footer>
     </div>
   );
 }
