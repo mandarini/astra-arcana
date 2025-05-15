@@ -12,7 +12,14 @@
   },
   "dev": {
     "port": 18787
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "SPELL_LOGS",
+      "id": "93b63e5a79c8410e91b7c97fbefc54ea",
+      "preview_id": "6d82046ecf6245a8a217101c67339f1a"
+    }
+  ]
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

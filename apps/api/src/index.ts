@@ -7,7 +7,6 @@ const ingredients = defaultIngredients;
 const incantations = defaultIncantations;
 const recipes = defaultRecipes;
 
-// In-memory storage for spell cast logs
 interface SpellCastLog {
   timestamp: string;
   ingredients: Ingredient[];
@@ -16,13 +15,12 @@ interface SpellCastLog {
   message: string;
 }
 
-const spellCastLogs: SpellCastLog[] = [];
-
 /**
  * Interface for the application environment
  */
 interface Env {
-  // Add bindings here if needed
+  // KV namespace binding for spell logs
+  SPELL_LOGS: KVNamespace;
 }
 
 export default {
@@ -70,19 +68,33 @@ export default {
         const success = true;
         const message = 'Spell cast successfully!';
 
-        // Log the spell cast in memory
-        spellCastLogs.push({
+        // Create log entry
+        const logEntry: SpellCastLog = {
           timestamp,
           ingredients,
           incantations,
           success,
           message,
-        });
+        };
 
-        // Limit logs to the most recent 100 entries
-        if (spellCastLogs.length > 100) {
-          spellCastLogs.shift(); // Remove the oldest entry
+        // Get existing logs from KV
+        let logsArray: SpellCastLog[] = [];
+        const logsString = await env.SPELL_LOGS.get('spellLogs');
+
+        if (logsString) {
+          logsArray = JSON.parse(logsString);
         }
+
+        // Add new log entry
+        logsArray.push(logEntry);
+
+        // Limit to most recent 100 entries
+        if (logsArray.length > 100) {
+          logsArray = logsArray.slice(-100);
+        }
+
+        // Store updated logs back to KV
+        await env.SPELL_LOGS.put('spellLogs', JSON.stringify(logsArray));
 
         return new Response(
           JSON.stringify({
@@ -198,8 +210,11 @@ export default {
         },
       });
     } else if (path === '/api/spell-logs') {
-      // Return the spell cast logs
-      return new Response(JSON.stringify(spellCastLogs), {
+      // Return the spell cast logs from KV
+      const logsString = await env.SPELL_LOGS.get('spellLogs');
+      const logs = logsString ? JSON.parse(logsString) : [];
+
+      return new Response(JSON.stringify(logs), {
         headers: {
           'Content-Type': 'application/json',
           ...corsHeaders,
