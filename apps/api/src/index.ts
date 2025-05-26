@@ -3,6 +3,7 @@ import { defaultIncantations, defaultIngredients } from './default-data';
 import { defaultRecipes } from './default-recipes';
 import { CompleteSpellResult } from './hexagonal-spellcasting/types';
 import { calculateCompleteSpellResult } from './hexagonal-spellcasting/calculator';
+import { generateVisualizationData } from './hexagonal-spellcasting/visualization';
 
 // Use the default data from the separate files
 const ingredients = defaultIngredients;
@@ -139,6 +140,53 @@ export default {
       }
     }
 
+    // The visualization endpoint accepts POST requests
+    if (path === '/api/visualize') {
+      // Only allow POST for the visualize endpoint
+      if (request.method !== 'POST') {
+        return new Response('Method not allowed for this endpoint', {
+          status: 405,
+          headers: corsHeaders,
+        });
+      }
+
+      try {
+        // Parse the JSON body with proper typing
+        const data = (await request.json()) as {
+          ingredients?: Ingredient[];
+          incantations?: Incantation[];
+        };
+        const { ingredients = [], incantations = [] } = data;
+
+        // Generate visualization data without actually casting the spell
+        const visualizationData = generateVisualizationData(ingredients, incantations);
+        
+        return new Response(
+          JSON.stringify(visualizationData),
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              ...corsHeaders,
+            },
+          }
+        );
+      } catch (error) {
+        return new Response(
+          JSON.stringify({
+            error: 'Invalid request data',
+            message: error instanceof Error ? error.message : 'Unknown error',
+          }),
+          {
+            status: 400,
+            headers: {
+              'Content-Type': 'application/json',
+              ...corsHeaders,
+            },
+          }
+        );
+      }
+    }
+    
     // For other endpoints, only allow GET requests
     if (request.method !== 'GET') {
       return new Response('Method not allowed', {
@@ -239,6 +287,7 @@ export default {
               '/api/incantations?name=...&affinity=...&language=...&kind=...&moonphase=...',
             recipes: '/api/recipes',
             cast: '/api/cast',
+            visualize: '/api/visualize',
             spellLogs: '/api/spell-logs',
           },
         }),

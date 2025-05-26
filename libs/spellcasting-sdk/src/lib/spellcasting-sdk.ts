@@ -6,6 +6,7 @@ import {
   Age,
   Language,
   MoonPhase,
+  SpellVisualizationData,
 } from '@astra-arcana/spellcasting-types';
 
 // Interface for spell cast logs
@@ -326,6 +327,59 @@ export class SpellcastingSDK {
       return data as SpellCastLog[];
     } catch (error) {
       console.error('Error fetching spell logs:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Visualizes a spell with the selected ingredients and incantations without casting it
+   * Accepts either objects or strings
+   * @returns Visualization data for the hexagonal spellcasting UI
+   */
+  async visualizeSpell(
+    ingredients: Ingredient[] | string[],
+    incantations: Incantation[] | string[]
+  ): Promise<SpellVisualizationData> {
+    try {
+      // Validate and convert if strings were provided
+      let validIngredients: Ingredient[];
+      let validIncantations: Incantation[];
+
+      if (ingredients.length > 0 && typeof ingredients[0] === 'string') {
+        validIngredients = await this.validateIngredients(
+          ingredients as string[]
+        );
+      } else {
+        validIngredients = ingredients as Ingredient[];
+      }
+
+      if (incantations.length > 0 && typeof incantations[0] === 'string') {
+        validIncantations = await this.validateIncantations(
+          incantations as string[]
+        );
+      } else {
+        validIncantations = incantations as Incantation[];
+      }
+
+      const response = await fetch(`${this.apiUrl}/api/visualize`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ingredients: validIngredients,
+          incantations: validIncantations,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to visualize spell: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data as SpellVisualizationData;
+    } catch (error) {
+      console.error('Error visualizing spell:', error);
       throw error;
     }
   }
