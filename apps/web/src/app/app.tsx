@@ -6,6 +6,7 @@ import {
 } from '@astra-arcana/spellcasting-types';
 import { RecipeModal } from './RecipeModal';
 import { LogsModal } from './LogsModal';
+import { CauldronVisualization } from './CauldronVisualization';
 import { SpellcastingSDK, SpellCastLog } from '@astra-arcana/spellcasting-sdk';
 import { ToastContainer, toast, ToastPosition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -275,7 +276,7 @@ export function App() {
       />
       <header className="flex items-center justify-between mb-8 p-4 border-b border-purple-800 h-[100px]">
         <div className="flex items-center">
-        <img
+          <img
             src={logo}
             alt="Astra Arcana Logo"
             className="w-16 h-16 mr-4 object-contain"
@@ -289,33 +290,32 @@ export function App() {
           </div>
         </div>
         <div className="flex items-center">
-
-        <button
-          onClick={() => setShowLogsModal(true)}
-          className="mr-4 bg-purple-800 hover:bg-purple-700 text-pink-200 py-2 px-3 rounded-lg text-sm flex items-center transition-colors"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-4 w-4 mr-1"
-            viewBox="0 0 20 20"
-            fill="currentColor"
+          <button
+            onClick={() => setShowLogsModal(true)}
+            className="mr-4 bg-purple-800 hover:bg-purple-700 text-pink-200 py-2 px-3 rounded-lg text-sm flex items-center transition-colors"
           >
-            <path
-              fillRule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-              clipRule="evenodd"
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-4 w-4 mr-1"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                clipRule="evenodd"
+              />
+            </svg>
+            View Logs
+          </button>
+          <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500">
+            {/* Founder profile picture */}
+            <img
+              src={founderPic}
+              alt="Founder Astra"
+              className="w-full h-full object-cover"
             />
-          </svg>
-          View Logs
-        </button>
-        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500">
-          {/* Founder profile picture */}
-          <img
-            src={founderPic}
-            alt="Founder Astra"
-            className="w-full h-full object-cover"
-          />
-        </div>
+          </div>
         </div>
       </header>
 
@@ -408,99 +408,27 @@ export function App() {
             Cauldron
           </h2>
           <div className="overflow-y-auto flex-1 px-4 pb-4 flex flex-col">
-            {/* Recipe Button at top */}
-            <button
-              onClick={() => setShowRecipesModal(true)}
-              className="bg-purple-600 text-white py-2 px-6 rounded-lg font-semibold transition-all hover:bg-purple-700 active:scale-95 flex items-center justify-center mb-4"
-            >
-              <span className="mr-2">📚</span> View Recipes
-            </button>
+            {/* Recipes button */}
+            <div className="mb-4">
+              <button
+                onClick={() => setShowRecipesModal(true)}
+                className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg font-semibold transition-all hover:bg-purple-700 active:scale-95 flex items-center justify-center"
+              >
+                <span className="mr-2">📚</span> Recipes
+              </button>
+            </div>
 
-            {/* Empty cauldron area with dashed border */}
-            <div
+            {/* Cauldron Visualization Component */}
+            <CauldronVisualization
+              selectedIngredients={selectedIngredients}
+              selectedIncantations={selectedIncantations}
+              sdk={sdk}
+              onClear={clearCauldron}
+              isDraggedOver={isDraggedOver}
               onDragOver={onDragOver}
               onDragLeave={onDragLeave}
               onDrop={onDrop}
-              className={`flex-grow border-2 border-dashed ${
-                isDraggedOver
-                  ? 'border-pink-400 bg-purple-900/30'
-                  : 'border-blue-500'
-              } rounded-lg p-4 mb-4 min-h-40 transition-colors duration-200 relative`}
-            >
-              {/* Clear button (only visible when there are items) */}
-              {(selectedIngredients.length > 0 ||
-                selectedIncantations.length > 0) && (
-                <button
-                  onClick={clearCauldron}
-                  className="absolute top-2 right-2 bg-purple-700 hover:bg-purple-800 text-pink-200 rounded-full p-1.5 shadow-lg transition-all hover:scale-105 active:scale-95 z-10"
-                  title="Clear cauldron"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </button>
-              )}
-              {selectedIngredients.length > 0 ||
-              selectedIncantations.length > 0 ? (
-                <div className="space-y-2">
-                  {Object.keys(countIngredients).length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-medium text-purple-300">
-                        Ingredients:
-                      </h3>
-                      <ul className="ml-2">
-                        {Object.entries(countIngredients).map(
-                          ([name, { count, item }], index) => (
-                            <li key={`ing-${index}`} className="text-pink-200">
-                              {name}{' '}
-                              {count > 1 && (
-                                <span className="text-xs bg-purple-700 px-1.5 py-0.5 rounded-full ml-1">
-                                  x{count}
-                                </span>
-                              )}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                  {Object.keys(countIncantations).length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-medium text-purple-300">
-                        Incantations:
-                      </h3>
-                      <ul className="ml-2">
-                        {Object.entries(countIncantations).map(
-                          ([name, { count, item }], index) => (
-                            <li key={`inc-${index}`} className="text-pink-200">
-                              {name}{' '}
-                              {count > 1 && (
-                                <span className="text-xs bg-purple-700 px-1.5 py-0.5 rounded-full ml-1">
-                                  x{count}
-                                </span>
-                              )}
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center">
-                  Drag or select items to prepare your spell
-                </p>
-              )}
-            </div>
+            />
           </div>
 
           {/* Cast Spell button - full width at bottom */}
@@ -548,11 +476,19 @@ export function App() {
         logs={spellLogs}
         loading={logsLoading}
       />
-      
+
       {/* Footer */}
       <footer className="w-full py-2 mt-4 border-t border-purple-800 text-center">
         <div className="container mx-auto px-4 text-xs text-purple-400">
-          &copy; Astra Moonlace, 2025 | <a href="https://github.com/maxkless/astra-arcana" className="text-purple-500 hover:text-purple-300" target="_blank" rel="noopener noreferrer">GitHub</a>
+          &copy; Astra Moonlace, 2025 |{' '}
+          <a
+            href="https://github.com/maxkless/astra-arcana"
+            className="text-purple-500 hover:text-purple-300"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
         </div>
       </footer>
     </div>
