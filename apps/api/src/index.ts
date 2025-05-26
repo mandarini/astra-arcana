@@ -2,7 +2,7 @@ import { Incantation, Ingredient } from '@astra-arcana/spellcasting-types';
 import { defaultIncantations, defaultIngredients } from './default-data';
 import { defaultRecipes } from './default-recipes';
 import { CompleteSpellResult } from './hexagonal-spellcasting/types';
-import { calculateCompleteSpellResult } from './hexagonal-spellcasting';
+import { calculateCompleteSpellResult } from './hexagonal-spellcasting/calculator';
 
 // Use the default data from the separate files
 const ingredients = defaultIngredients;
