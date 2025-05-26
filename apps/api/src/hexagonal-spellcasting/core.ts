@@ -42,12 +42,6 @@ export const ELEMENTS: Record<string, { id: HexElement, baseValue: number, oppos
     baseValue: 5,
     oppositeId: "aether",
     neighbors: ["air", "aether"]
-  },
-  NEUTRAL: {
-    id: "neutral",
-    baseValue: 3,
-    oppositeId: "neutral",
-    neighbors: []
   }
 };
 
@@ -133,12 +127,12 @@ export function calculateElementalRelationship(element1Id: HexElement, element2I
  * Processes an ingredient to calculate its magical value
  */
 export function processIngredient(ingredient: Ingredient): ProcessedIngredient {
-  // Convert traditional element to hex element (including aether/void if present)
-  const elementId = ingredient.affinity as HexElement;
+  // Get the element if it exists, otherwise proceed without elemental affinity
+  const elementId = ingredient.affinity ? (ingredient.affinity as HexElement) : undefined;
   
-  // Get base element value
-  const elementValue = ELEMENTS[elementId.toUpperCase()]?.baseValue || 
-                       ELEMENTS.NEUTRAL.baseValue;
+  // Get base element value - default to 3 if no valid element is specified
+  const elementValue = elementId && ELEMENTS[elementId.toUpperCase()] ? 
+                      ELEMENTS[elementId.toUpperCase()].baseValue : 3;
   
   // Apply age modifier if available
   const ageModifier = ingredient.age ? AGE_MODIFIERS[ingredient.age] || 1 : 1;
@@ -154,13 +148,12 @@ export function processIngredient(ingredient: Ingredient): ProcessedIngredient {
  * Processes an incantation to calculate its magical properties
  */
 export function processIncantation(incantation: Incantation): ProcessedIncantation {
-  // Convert traditional element to hex element (including aether/void if present)
-  const elementId = (incantation.affinity as HexElement) || "neutral";
+  // Get the element if it exists, otherwise leave as undefined
+  const elementId = incantation.affinity ? (incantation.affinity as HexElement) : undefined;
   
-  // Get base element value if affinity exists
-  const elementValue = elementId !== "neutral"
-    ? ELEMENTS[elementId.toUpperCase()]?.baseValue || ELEMENTS.NEUTRAL.baseValue
-    : ELEMENTS.NEUTRAL.baseValue;
+  // Get base element value - default to 3 if no valid element is specified
+  const elementValue = elementId && ELEMENTS[elementId.toUpperCase()] ? 
+                      ELEMENTS[elementId.toUpperCase()].baseValue : 3;
   
   // Apply language modifier
   const languageModifier = LANGUAGE_MODIFIERS[incantation.language] || 1;

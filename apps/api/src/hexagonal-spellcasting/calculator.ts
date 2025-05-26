@@ -23,20 +23,22 @@ export function calculateSpellResult(ingredients: Ingredient[], incantations: In
   const processedIncantations = incantations.map(processIncantation);
   
   // Step 3: Calculate elemental balance
-  const elementalValues: Record<HexElement | 'neutral', number> = {
-    fire: 0, water: 0, earth: 0, air: 0, aether: 0, void: 0, neutral: 0
+  const elementalValues: Record<HexElement, number> = {
+    fire: 0, water: 0, earth: 0, air: 0, aether: 0, void: 0
   };
   
   // Add ingredient values to elemental balance
   processedIngredients.forEach(ingredient => {
-    if (elementalValues.hasOwnProperty(ingredient.elementId)) {
+    // Only add to elemental balance if an element is specified
+    if (ingredient.elementId && elementalValues.hasOwnProperty(ingredient.elementId)) {
       elementalValues[ingredient.elementId] += ingredient.processedValue;
     }
   });
   
   // Add incantation values to elemental balance
   processedIncantations.forEach(incantation => {
-    if (elementalValues.hasOwnProperty(incantation.elementId)) {
+    // Only add to elemental balance if an element is specified
+    if (incantation.elementId && elementalValues.hasOwnProperty(incantation.elementId)) {
       elementalValues[incantation.elementId] += incantation.processedValue;
     }
   });
@@ -45,7 +47,7 @@ export function calculateSpellResult(ingredients: Ingredient[], incantations: In
   let interactionModifier = 0;
   
   // Check all element pairs for interactions
-  const elementIds = Object.keys(elementalValues).filter(id => id !== 'neutral') as HexElement[];
+  const elementIds = Object.keys(elementalValues) as HexElement[];
   
   for (let i = 0; i < elementIds.length; i++) {
     for (let j = i + 1; j < elementIds.length; j++) {
@@ -77,17 +79,19 @@ export function calculateSpellResult(ingredients: Ingredient[], incantations: In
   // Apply ingredient count to complexity
   totalComplexity *= (1 + (processedIngredients.length * 0.1));
   
-  // Step 6: Find dominant element
-  let dominantElement: HexElement = 'neutral';
-  let maxElementValue = -Infinity;
+  // Step 6: Find dominant element if any
+  let dominantElement: HexElement | undefined = undefined;
+  let maxElementValue = 0; // Only consider positive values as dominant
   
   // Find the element with the highest value
   Object.entries(elementalValues).forEach(([element, value]) => {
-    if (element !== 'neutral' && value > maxElementValue) {
+    if (value > maxElementValue) {
       dominantElement = element as HexElement;
       maxElementValue = value;
     }
   });
+  
+  // If no element has a positive value, leave dominantElement as undefined
   
   // Step 7: Calculate final spell metrics
   const spellPower = Math.max(0, totalPower * (1 + interactionModifier));

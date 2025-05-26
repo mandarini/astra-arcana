@@ -14,8 +14,7 @@ export const elementEffects: Record<HexElement, string[]> = {
   earth: ["stability", "protection", "grounding", "abundance", "connection"],
   air: ["movement", "intellect", "communication", "freedom", "clarity"],
   aether: ["consciousness", "spirituality", "dreams", "transcendence", "insight"],
-  void: ["mystery", "potential", "secrets", "absorption", "transition"],
-  neutral: ["balance", "neutrality", "stability", "mediocrity", "normality"]
+  void: ["mystery", "potential", "secrets", "absorption", "transition"]
 };
 
 /**
@@ -44,39 +43,50 @@ export function determineSpellEffects(spellResult: SpellResult): {
   
   // Calculate total elemental presence
   const totalElementalValue = Object.entries(spellResult.elementalBalance)
-    .filter(([element]) => element !== 'neutral')
     .reduce((sum, [_, val]) => sum + val, 0);
   
   // Calculate proportional effect of each element
   Object.entries(spellResult.elementalBalance).forEach(([element, value]) => {
-    // Skip neutral or elements with no presence
-    if (element === 'neutral' || value <= 0) return;
+    // Skip elements with no presence
+    if (value <= 0) return;
     
     // Calculate this element's proportional contribution
     const proportion = value / (totalElementalValue || 1); // Prevent division by zero
     
     // Add effects based on proportion strength
     if (proportion >= 0.4) { // Major influence
-      effectResult.primaryEffects.push({
-        element: element as HexElement,
-        effect: elementEffects[element as HexElement][0], // Primary effect
-        strength: "strong",
-        proportion: proportion
-      });
+      // Ensure this is a valid HexElement before accessing elementEffects
+      const hexElement = element as HexElement;
+      if (elementEffects[hexElement]) {
+        effectResult.primaryEffects.push({
+          element: hexElement,
+          effect: elementEffects[hexElement][0], // Primary effect
+          strength: "strong",
+          proportion: proportion
+        });
+      }
     } else if (proportion >= 0.2) { // Moderate influence
-      effectResult.primaryEffects.push({
-        element: element as HexElement,
-        effect: elementEffects[element as HexElement][Math.floor(Math.random() * 3)], // One of top 3 effects
-        strength: "moderate",
-        proportion: proportion
-      });
+      // Ensure this is a valid HexElement before accessing elementEffects
+      const hexElement = element as HexElement;
+      if (elementEffects[hexElement]) {
+        effectResult.primaryEffects.push({
+          element: hexElement,
+          effect: elementEffects[hexElement][Math.floor(Math.random() * 3)], // One of top 3 effects
+          strength: "moderate",
+          proportion: proportion
+        });
+      }
     } else if (proportion >= 0.05) { // Minor influence
-      effectResult.primaryEffects.push({
-        element: element as HexElement,
-        effect: elementEffects[element as HexElement][Math.floor(Math.random() * elementEffects[element as HexElement].length)],
-        strength: "subtle",
-        proportion: proportion
-      });
+      // Ensure this is a valid HexElement before accessing elementEffects
+      const hexElement = element as HexElement;
+      if (elementEffects[hexElement]) {
+        effectResult.primaryEffects.push({
+          element: hexElement,
+          effect: elementEffects[hexElement][Math.floor(Math.random() * elementEffects[hexElement].length)],
+          strength: "subtle",
+          proportion: proportion
+        });
+      }
     }
   });
   
@@ -252,7 +262,7 @@ export function determineSpecialEffect(spellResult: SpellResult): SpecialEffect 
   
   // Check for elemental balance special effects (when 3+ elements are present in significant amounts)
   const significantElements = Object.entries(spellResult.elementalBalance)
-    .filter(([element, value]) => element !== 'neutral' && value >= 3)
+    .filter(([element, value]) => value >= 3)
     .map(([element]) => element);
   
   if (significantElements.length >= 3) {
@@ -265,7 +275,7 @@ export function determineSpecialEffect(spellResult: SpellResult): SpecialEffect 
   
   // Check for extremely powerful single element
   const powerfulElement = Object.entries(spellResult.elementalBalance)
-    .filter(([element, value]) => element !== 'neutral' && value > 10)
+    .filter(([element, value]) => value > 10)
     .map(([element]) => element)[0];
   
   if (powerfulElement) {

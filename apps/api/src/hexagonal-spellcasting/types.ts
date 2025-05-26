@@ -1,7 +1,7 @@
 import { Ingredient, Incantation, Age, Language, MoonPhase } from '@astra-arcana/spellcasting-types';
 
 // Extended element type to include our hexagonal system
-export type HexElement = 'fire' | 'water' | 'earth' | 'air' | 'aether' | 'void' | 'neutral';
+export type HexElement = 'fire' | 'water' | 'earth' | 'air' | 'aether' | 'void';
 
 // Element relationship structure
 export interface ElementRelationship {
@@ -29,14 +29,14 @@ export interface ElementEffect {
 
 // Processed ingredient
 export interface ProcessedIngredient {
-  elementId: HexElement;
+  elementId?: HexElement;
   processedValue: number;
   name: string;
 }
 
 // Processed incantation
 export interface ProcessedIncantation {
-  elementId: HexElement;
+  elementId?: HexElement;
   spellTypeId: string;
   languageId: string;
   moonPhase?: MoonPhase;
@@ -53,8 +53,8 @@ export interface SpellResult {
   successRate: number;
   power: number;
   duration: number;
-  dominantElement: HexElement;
-  elementalBalance: Record<HexElement | 'neutral', number>;
+  dominantElement?: HexElement;
+  elementalBalance: Record<HexElement, number>;
   interactionModifier: number;
   ingredients: string[];
   incantations: string[];
