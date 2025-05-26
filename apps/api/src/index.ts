@@ -1,6 +1,8 @@
 import { Incantation, Ingredient } from '@astra-arcana/spellcasting-types';
 import { defaultIncantations, defaultIngredients } from './default-data';
 import { defaultRecipes } from './default-recipes';
+import { CompleteSpellResult } from './hexagonal-spellcasting/types';
+import { calculateCompleteSpellResult } from './hexagonal-spellcasting';
 
 // Use the default data from the separate files
 const ingredients = defaultIngredients;
@@ -13,6 +15,7 @@ interface SpellCastLog {
   incantations: Incantation[];
   success: boolean;
   message: string;
+  spellResult?: CompleteSpellResult;
 }
 
 /**
@@ -64,9 +67,12 @@ export default {
         };
         const { ingredients = [], incantations = [] } = data;
 
+        // Calculate spell result using the hexagonal spellcasting system
+        const spellResult = calculateCompleteSpellResult(ingredients, incantations);
+        
         const timestamp = new Date().toISOString();
-        const success = true;
-        const message = 'Spell cast successfully!';
+        const success = spellResult.success;
+        const message = success ? spellResult.spellDescription : 'Spell failed to cast correctly.';
 
         // Create log entry
         const logEntry: SpellCastLog = {
@@ -75,6 +81,7 @@ export default {
           incantations,
           success,
           message,
+          spellResult
         };
 
         // Get existing logs from KV
@@ -105,6 +112,8 @@ export default {
               ingredients_count: ingredients?.length || 0,
               incantations_count: incantations?.length || 0,
             },
+            // Return the complete hexagonal spellcasting result
+            spellResult,
           }),
           {
             headers: {
