@@ -33,7 +33,7 @@ export function calculateSpellResult(
   // Add ingredient values to elemental balance
   processedIngredients.forEach((ingredient) => {
     // Only add to elemental balance if an element is specified
-    if (ingredient.elementId && elementalValues[ingredient.elementId]) {
+    if (ingredient.elementId && ingredient.elementId in elementalValues) {
       elementalValues[ingredient.elementId] += ingredient.processedValue;
     }
   });
@@ -41,7 +41,7 @@ export function calculateSpellResult(
   // Add incantation values to elemental balance
   processedIncantations.forEach((incantation) => {
     // Only add to elemental balance if an element is specified
-    if (incantation.elementId && elementalValues[incantation.elementId]) {
+    if (incantation.elementId && incantation.elementId in elementalValues) {
       elementalValues[incantation.elementId] += incantation.processedValue;
     }
   });

@@ -38,12 +38,14 @@ export function generateVisualizationData(
 
   // Add ingredient values to elemental balance
   processedIngredients.forEach((ingredient) => {
-    elementalBalance[ingredient.elementId] += ingredient.processedValue;
+    if (ingredient.elementId && ingredient.elementId in elementalBalance) {
+      elementalBalance[ingredient.elementId] += ingredient.processedValue;
+    }
   });
 
   // Add incantation values to elemental balance
   processedIncantations.forEach((incantation) => {
-    if (incantation.elementId) {
+    if (incantation.elementId && incantation.elementId in elementalBalance) {
       elementalBalance[incantation.elementId] += incantation.processedValue;
     }
   });
