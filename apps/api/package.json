@@ -5,6 +5,7 @@
   "nx": {
     "name": "api",
     "sourceRoot": "src",
+    "projectType": "application",
     "targets": {
       "cf-typegen": {
         "command": "wrangler types",

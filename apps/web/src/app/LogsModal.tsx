@@ -10,15 +10,13 @@ interface LogsModalProps {
 }
 
 export function LogsModal({ isOpen, onClose, logs, loading }: LogsModalProps) {
-  if (!isOpen) return null;
-  
   // Handle ESC key press to close the modal
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
       onClose();
     }
   };
-  
+
   // Add and remove event listener for Escape key
   React.useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
@@ -26,6 +24,8 @@ export function LogsModal({ isOpen, onClose, logs, loading }: LogsModalProps) {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
+
+  if (!isOpen) return null;
 
   // Format date in a more readable format
   const formatDate = (dateString: string) => {
@@ -50,7 +50,7 @@ export function LogsModal({ isOpen, onClose, logs, loading }: LogsModalProps) {
   };
 
   return createPortal(
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50"
       onClick={(e) => {
         // Close the modal when clicking the background (not its children)
@@ -62,13 +62,26 @@ export function LogsModal({ isOpen, onClose, logs, loading }: LogsModalProps) {
       <div className="bg-gray-900 text-white rounded-lg shadow-xl w-full max-w-4xl max-h-[80vh] overflow-hidden flex flex-col animate-fadeIn">
         {/* Header */}
         <div className="bg-purple-900 px-6 py-4 flex justify-between items-center border-b border-purple-700">
-          <h2 className="text-2xl font-bold text-pink-200">Spell Casting Logs</h2>
+          <h2 className="text-2xl font-bold text-pink-200">
+            Spell Casting Logs
+          </h2>
           <button
             onClick={onClose}
             className="text-pink-200 hover:text-white focus:outline-none"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>

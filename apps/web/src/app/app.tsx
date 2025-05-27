@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
+import { SpellcastingSDK, SpellCastLog } from '@astra-arcana/spellcasting-sdk';
 import {
-  Ingredient,
   Incantation,
+  Ingredient,
   Recipe,
 } from '@astra-arcana/spellcasting-types';
-import { RecipeModal } from './RecipeModal';
-import { LogsModal } from './LogsModal';
-import { CauldronVisualization } from './CauldronVisualization';
-import { SpellcastingSDK, SpellCastLog } from '@astra-arcana/spellcasting-sdk';
-import { ToastContainer, toast, ToastPosition } from 'react-toastify';
+import { useEffect, useState } from 'react';
+import { toast, ToastContainer, ToastPosition } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import textLogo from '../assets/astra-arcana-text.png';
 import logo from '../assets/astra-arcana-logo.png';
+import textLogo from '../assets/astra-arcana-text.png';
 import founderPic from '../assets/founder-astra.png';
+import { CauldronVisualization } from './CauldronVisualization';
+import { LogsModal } from './LogsModal';
+import { RecipeModal } from './RecipeModal';
 
 // Define types for our drag items
 type ItemType = 'ingredient' | 'incantation';
@@ -233,31 +233,6 @@ export function App() {
     setSelectedIngredients([]);
     setSelectedIncantations([]);
   };
-
-  // Count occurrences of ingredients and incantations in the cauldron
-  const countIngredients = selectedIngredients.reduce<
-    Record<string, { count: number; item: Ingredient }>
-  >((acc, ingredient) => {
-    const key = ingredient.name;
-    if (!acc[key]) {
-      acc[key] = { count: 1, item: ingredient };
-    } else {
-      acc[key].count += 1;
-    }
-    return acc;
-  }, {});
-
-  const countIncantations = selectedIncantations.reduce<
-    Record<string, { count: number; item: Incantation }>
-  >((acc, incantation) => {
-    const key = incantation.name;
-    if (!acc[key]) {
-      acc[key] = { count: 1, item: incantation };
-    } else {
-      acc[key].count += 1;
-    }
-    return acc;
-  }, {});
 
   return (
     <div className="min-h-screen bg-gray-900 text-purple-100 p-4 relative">

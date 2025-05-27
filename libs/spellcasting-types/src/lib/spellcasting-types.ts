@@ -29,14 +29,7 @@ export type Language =
   | 'Old Norse'
   | 'Sanskrit'
   | 'Other';
-export type Element =
-  | 'fire'
-  | 'water'
-  | 'earth'
-  | 'air'
-  | 'aether'
-  | 'void'
-  | 'neutral';
+export type Element = 'fire' | 'water' | 'earth' | 'air' | 'aether' | 'void';
 export type MoonPhase = 'new' | 'waxing' | 'full' | 'waning';
 
 // Elemental relationship definitions for hexagonal visualization
@@ -107,8 +100,6 @@ export const HEXAGON_ELEMENT_POSITIONS: Record<Element, ElementPosition> = {
   // Aether (bottom-right) ↔ Void (top-left)
   aether: { x: 350, y: 250, angle: 120 }, // Bottom-right
   void: { x: 50, y: 150, angle: 300 }, // Top-left (opposite of aether)
-
-  neutral: { x: 200, y: 200, angle: 0 }, // Center (if needed)
 };
 
 // Element colors for visualization - more subdued and muted
@@ -122,7 +113,6 @@ export const ELEMENT_COLORS: Record<
   air: { primary: '#aaaaaa', glow: '#cccccc' },
   aether: { primary: '#8844cc', glow: '#aa66dd' },
   void: { primary: '#555555', glow: '#666688' },
-  neutral: { primary: '#777777', glow: '#999999' },
 };
 
 // Helper function to get opposite element
@@ -175,5 +165,5 @@ export type SpellVisualizationData = {
   power: number;
   duration: number;
   complexity: number;
-  dominantElement: Element;
+  dominantElement?: Element;
 };
