@@ -29,3 +29,8 @@ server.tool('get-recipes', async () => {
     content: [{ type: 'text', text: JSON.stringify(recipes) }],
   };
 });
+
+const transport = new StdioServerTransport();
+(async () => {
+  await server.connect(transport);
+})();
