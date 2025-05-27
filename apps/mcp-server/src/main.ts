@@ -1,6 +1,7 @@
 import { SpellcastingSDK } from '@astra-arcana/spellcasting-sdk';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
 
 const server = new McpServer({
   name: 'Astra Arcana',
@@ -29,6 +30,18 @@ server.tool('get-recipes', async () => {
     content: [{ type: 'text', text: JSON.stringify(recipes) }],
   };
 });
+
+server.tool(
+  'cast-spell',
+  'Lets the user cast a spell via the Astra Arcana API.',
+  { ingredients: z.array(z.string()), incantations: z.array(z.string()) },
+  async ({ ingredients, incantations }) => {
+    const result = await sdk.castSpell(ingredients, incantations);
+    return {
+      content: [{ type: 'text', text: JSON.stringify(result) }],
+    };
+  }
+);
 
 const transport = new StdioServerTransport();
 (async () => {
