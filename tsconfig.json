@@ -11,6 +11,9 @@
     },
     {
       "path": "./libs/spellcasting-sdk"
+    },
+    {
+      "path": "./apps/mcp-server"
     }
   ]
 }

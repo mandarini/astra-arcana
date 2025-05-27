@@ -1,0 +1,29 @@
+{
+  "name": "@astra-arcana/mcp-server",
+  "version": "0.0.1",
+  "private": true,
+  "nx": {
+    "targets": {
+      "serve": {
+        "continuous": true,
+        "executor": "@nx/js:node",
+        "defaultConfiguration": "development",
+        "dependsOn": [
+          "build"
+        ],
+        "options": {
+          "buildTarget": "@astra-arcana/mcp-server:build",
+          "runBuildTargetDependencies": false
+        },
+        "configurations": {
+          "development": {
+            "buildTarget": "@astra-arcana/mcp-server:build:development"
+          },
+          "production": {
+            "buildTarget": "@astra-arcana/mcp-server:build:production"
+          }
+        }
+      }
+    }
+  }
+}
