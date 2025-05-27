@@ -1,5 +1,9 @@
 {
   "mcpServers": {
+    "astra-arcana": {
+      "command": "node",
+      "args": ["/path/astra-arcana/apps/mcp-server/dist/main.js"]
+    },
     "nx-mcp": {
       "url": "http://localhost:9292/sse"
     }
