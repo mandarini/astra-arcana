@@ -5,24 +5,11 @@
   "nx": {
     "targets": {
       "serve": {
+        "command": "npx -y @modelcontextprotocol/inspector node ./apps/mcp-server/dist/main.js",
         "continuous": true,
-        "executor": "@nx/js:node",
-        "defaultConfiguration": "development",
         "dependsOn": [
           "build"
-        ],
-        "options": {
-          "buildTarget": "@astra-arcana/mcp-server:build",
-          "runBuildTargetDependencies": false
-        },
-        "configurations": {
-          "development": {
-            "buildTarget": "@astra-arcana/mcp-server:build:development"
-          },
-          "production": {
-            "buildTarget": "@astra-arcana/mcp-server:build:production"
-          }
-        }
+        ]
       }
     }
   }
