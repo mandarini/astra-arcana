@@ -126,31 +126,33 @@ export const CauldronVisualization: React.FC<CauldronVisualizationProps> = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Toggle buttons */}
-      <div className="flex space-x-1 mb-4">
-        <button
-          onClick={() => setViewMode('list')}
-          className={`flex-1 py-2 px-3 rounded-lg font-semibold transition-all text-sm ${
-            viewMode === 'list'
-              ? 'bg-purple-600 text-white'
-              : 'bg-gray-700 text-purple-300 hover:bg-gray-600'
-          }`}
-        >
-          📋 List
-        </button>
-        <button
-          onClick={() => setViewMode('visualization')}
-          disabled={!hasItems}
-          className={`flex-1 py-2 px-3 rounded-lg font-semibold transition-all text-sm ${
-            viewMode === 'visualization' && hasItems
-              ? 'bg-purple-600 text-white'
-              : hasItems
-              ? 'bg-gray-700 text-purple-300 hover:bg-gray-600'
-              : 'bg-gray-800 text-gray-500 cursor-not-allowed'
-          }`}
-        >
-          🔮 Visualize
-        </button>
+      {/* Toggle Button Group */}
+      <div className="mb-4">
+        <div className="flex rounded-lg bg-gray-700 p-1">
+          <button
+            onClick={() => setViewMode('list')}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+              viewMode === 'list'
+                ? 'bg-purple-600 text-white shadow-sm'
+                : 'text-gray-300 hover:text-white hover:bg-gray-600'
+            }`}
+          >
+            📋 List
+          </button>
+          <button
+            onClick={() => setViewMode('visualization')}
+            disabled={!hasItems}
+            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all duration-200 ${
+              viewMode === 'visualization' && hasItems
+                ? 'bg-purple-600 text-white shadow-sm'
+                : hasItems
+                ? 'text-gray-300 hover:text-white hover:bg-gray-600'
+                : 'text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            🔮 Visualize
+          </button>
+        </div>
       </div>
 
       {/* Content area */}
