@@ -1,7 +1,8 @@
 {
   "name": "@astra-arcana/mcp-server",
   "version": "0.0.1",
-  "private": true,
+  "private": false,
+  "bin": "./main.js",
   "nx": {
     "targets": {
       "build": {
@@ -40,6 +41,12 @@
             }
           }
         }
+      },
+      "setup-publish": {
+        "command": "node apps/mcp-server/setup-publish.js",
+        "dependsOn": [
+          "build"
+        ]
       },
       "serve": {
         "command": "npx -y @modelcontextprotocol/inspector node ./apps/mcp-server/dist/main.js",
