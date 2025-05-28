@@ -3,7 +3,7 @@
 First, install zod:
 
 ```bash
-npm install zod
+npm install -D zod
 ```
 
 Then add this tool to `apps/mcp-server/src/main.ts` after the previous tools:
