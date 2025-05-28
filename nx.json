@@ -18,7 +18,10 @@
       "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"],
       "preVersionCommand": "npx nx run mcp-server:setup-publish"
     },
-    "changelog": { "projectChangelogs": true, "workspaceChangelog": false }
+    "changelog": {
+      "projectChangelogs": true,
+      "workspaceChangelog": false
+    }
   },
   "plugins": [
     {
