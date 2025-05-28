@@ -4,6 +4,7 @@ Add this configuration to `nx.json`:
 
 ```json
 {
+  ...
   "release": {
     "projects": ["mcp-server"],
     "version": {
@@ -15,12 +16,15 @@ Add this configuration to `nx.json`:
       "workspaceChangelog": false
     }
   },
+  ...
   "targetDefaults": {
+    ...
     "nx-release-publish": {
       "options": {
         "packageRoot": "{projectRoot}/dist"
       }
     }
+    ...
   }
 }
 ```
