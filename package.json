@@ -16,6 +16,7 @@
     "@cloudflare/vitest-pool-workers": "^0.8.19",
     "@cloudflare/workers-types": "^4.20250508.0",
     "@eslint/js": "^9.8.0",
+    "@modelcontextprotocol/sdk": "^1.12.0",
     "@nx/eslint": "21.0.2",
     "@nx/eslint-plugin": "21.0.2",
     "@nx/js": "21.0.2",
@@ -56,13 +57,28 @@
     "tslib": "^2.3.0",
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.19.0",
+    "verdaccio": "^6.0.5",
     "vite": "^6.0.0",
     "vitest": "^3.0.0",
     "webpack-cli": "^5.1.4",
-    "wrangler": "^4.14.4"
+    "wrangler": "^4.14.4",
+    "zod": "^3.25.32"
   },
   "workspaces": [
     "apps/*",
     "libs/*"
-  ]
+  ],
+  "nx": {
+    "includedScripts": [],
+    "targets": {
+      "local-registry": {
+        "executor": "@nx/js:verdaccio",
+        "options": {
+          "port": 4873,
+          "config": ".verdaccio/config.yml",
+          "storage": "tmp/local-registry/storage"
+        }
+      }
+    }
+  }
 }
