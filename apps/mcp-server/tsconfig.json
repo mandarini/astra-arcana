@@ -1,9 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "files": [],
+  "include": [],
   "references": [
     {
-      "path": "../../libs/spellcasting-types"
+      "path": "../../libs/spellcasting-sdk"
     },
     {
       "path": "./tsconfig.app.json"

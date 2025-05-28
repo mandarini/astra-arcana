@@ -1,12 +1,11 @@
-import React from 'react';
 import {
   Element,
-  HEXAGON_ELEMENT_POSITIONS,
   ELEMENT_COLORS,
-  ELEMENTAL_RELATIONSHIPS,
-  SpellVisualizationData,
   getElementRelationshipType,
+  HEXAGON_ELEMENT_POSITIONS,
+  SpellVisualizationData,
 } from '@astra-arcana/spellcasting-types';
+import React from 'react';
 
 interface ElementNodeProps {
   element: Element;
@@ -21,8 +20,6 @@ const ElementNode: React.FC<ElementNodeProps> = ({
   position,
   isDominant,
 }) => {
-  if (element === 'neutral') return null;
-
   const colors = ELEMENT_COLORS[element];
   const glowIntensity = Math.min(1, 0.2 + strength * 0.1);
   const nodeSize = 20 + Math.min(strength * 2, 15); // Cap the size growth

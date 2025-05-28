@@ -298,23 +298,22 @@ export const CauldronVisualization: React.FC<CauldronVisualizationProps> = ({
                           {visualizationData.duration.toFixed(1)}
                         </span>
                       </div>
-                      {visualizationData.dominantElement &&
-                        visualizationData.dominantElement !== 'neutral' && (
-                          <div className="flex justify-between">
-                            <span className="text-purple-300">Dominant:</span>
-                            <span
-                              className="font-bold capitalize"
-                              style={{
-                                color:
-                                  ELEMENT_COLORS[
-                                    visualizationData.dominantElement
-                                  ].primary,
-                              }}
-                            >
-                              {visualizationData.dominantElement}
-                            </span>
-                          </div>
-                        )}
+                      {visualizationData.dominantElement && (
+                        <div className="flex justify-between">
+                          <span className="text-purple-300">Dominant:</span>
+                          <span
+                            className="font-bold capitalize"
+                            style={{
+                              color:
+                                ELEMENT_COLORS[
+                                  visualizationData.dominantElement
+                                ].primary,
+                            }}
+                          >
+                            {visualizationData.dominantElement}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
 

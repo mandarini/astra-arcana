@@ -10,15 +10,24 @@
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/src/test-setup.[jt]s"
     ],
-    "sharedGlobals": []
+    "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
+  },
+  "release": {
+    "projects": ["@katerinas/mcp-server-test"],
+    "version": {
+      "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"],
+      "preVersionCommand": "npx nx run @katerinas/mcp-server-test:setup-publish"
+    },
+    "changelog": {
+      "projectChangelogs": true,
+      "workspaceChangelog": false
+    }
   },
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
       "options": {
-        "typecheck": {
-          "targetName": "typecheck"
-        },
+        "typecheck": { "targetName": "typecheck" },
         "build": {
           "targetName": "build",
           "configName": "tsconfig.lib.json",
@@ -39,12 +48,7 @@
         "typecheckTargetName": "typecheck"
       }
     },
-    {
-      "plugin": "@nx/eslint/plugin",
-      "options": {
-        "targetName": "lint"
-      }
-    },
+    { "plugin": "@nx/eslint/plugin", "options": { "targetName": "lint" } },
     {
       "plugin": "@nx/vite/plugin",
       "options": {
@@ -61,17 +65,22 @@
     {
       "plugin": "@nx/js/typescript",
       "include": ["libs/spellcasting-types/*", "libs/spellcasting-sdk/*"],
+      "options": { "typecheck": { "targetName": "typecheck" } }
+    },
+    {
+      "plugin": "@nx/webpack/plugin",
       "options": {
-        "typecheck": {
-          "targetName": "typecheck"
-        }
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "previewTargetName": "preview",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
       }
     }
   ],
   "targetDefaults": {
-    "test": {
-      "dependsOn": ["^build"]
-    }
+    "test": { "dependsOn": ["^build"] },
+    "nx-release-publish": { "options": { "packageRoot": "{projectRoot}/dist" } }
   },
   "generators": {
     "@nx/react": {
@@ -81,13 +90,10 @@
         "linter": "eslint",
         "bundler": "vite"
       },
-      "component": {
-        "style": "tailwind"
-      },
-      "library": {
-        "style": "tailwind",
-        "linter": "eslint"
-      }
+      "component": { "style": "tailwind" },
+      "library": { "style": "tailwind", "linter": "eslint" }
     }
-  }
+  },
+  "nxCloudId": "683743e68a52dc0839bafd8e",
+  "nxCloudUrl": "https://staging.nx.app"
 }
