@@ -12,6 +12,17 @@
     ],
     "sharedGlobals": []
   },
+  "release": {
+    "projects": ["mcp-server"],
+    "version": {
+      "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"],
+      "preVersionCommand": "npx nx run mcp-server:setup-publish"
+    },
+    "changelog": {
+      "projectChangelogs": true,
+      "workspaceChangelog": false
+    }
+  },
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
@@ -81,6 +92,11 @@
   "targetDefaults": {
     "test": {
       "dependsOn": ["^build"]
+    },
+    "nx-release-publish": {
+      "options": {
+        "packageRoot": "{projectRoot}/dist"
+      }
     }
   },
   "generators": {
