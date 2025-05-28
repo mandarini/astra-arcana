@@ -13,10 +13,10 @@
     "sharedGlobals": ["{workspaceRoot}/.github/workflows/ci.yml"]
   },
   "release": {
-    "projects": ["mcp-server"],
+    "projects": ["@katerinas/mcp-server-test"],
     "version": {
       "manifestRootsToUpdate": ["{projectRoot}", "{projectRoot}/dist"],
-      "preVersionCommand": "npx nx run mcp-server:setup-publish"
+      "preVersionCommand": "npx nx run @katerinas/mcp-server-test:setup-publish"
     },
     "changelog": {
       "projectChangelogs": true,
