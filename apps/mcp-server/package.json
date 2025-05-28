@@ -1,6 +1,6 @@
 {
   "name": "@astra-arcana/mcp-server",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": false,
   "bin": "./main.js",
   "nx": {
