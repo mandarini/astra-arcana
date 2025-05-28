@@ -3,9 +3,6 @@
 Let's create our MCP server using Nx generators. Copy and paste these commands:
 
 ```bash
-# Install the MCP SDK
-npm install @modelcontextprotocol/sdk
-
 # Add the Nx Node plugin
 npx nx add @nx/node
 
