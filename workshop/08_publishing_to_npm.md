@@ -1,6 +1,12 @@
 # Step 8: Preparing for npm Publishing
 
-Create `apps/mcp-server/setup-publish.js`:
+Create `apps/mcp-server/setup-publish.js` file
+
+```bash
+touch apps/mcp-server/setup-publish.js
+```
+
+and add the following content:
 
 ```javascript
 import path from 'path';
