@@ -53,6 +53,14 @@ Then follow along with the exercises in each section. Each step includes detaile
 10. [Setting up Local Publishing](09_release_configuration.md) - Configuring Verdaccio
 11. [Configuring Release](10_configuring_release.md) - Setting up the release process
 
+## Bonus Steps
+
+12. [Connect to Nx Cloud](12_connect_to_nx_cloud.md) - Enable remote caching and distributed task execution
+13. [Generate CI Workflow](13_generate_ci_workflow.md) - Create an optimized GitHub Actions workflow
+14. [Protect Cache](14_protect_cache.md) - Secure your Nx Cloud cache with proper access tokens
+15. [Setup CI Release](15_setup_ci_release.md) - Automate package publishing in CI
+16. [Bonus Conclusion](16_bonus_conclusion.md) - Summary of bonus steps and next steps
+
 ## Resources
 
 - [Model Context Protocol Documentation](https://modelcontextprotocol.io/introduction)
