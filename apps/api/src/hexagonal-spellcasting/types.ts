@@ -1,4 +1,4 @@
-import { Ingredient, Incantation, Age, Language, MoonPhase } from '@astra-arcana/spellcasting-types';
+import { MoonPhase } from '@astra-arcana/spellcasting-types';
 
 // Extended element type to include our hexagonal system
 export type HexElement = 'fire' | 'water' | 'earth' | 'air' | 'aether' | 'void';
@@ -29,7 +29,7 @@ export interface ElementEffect {
 
 // Processed ingredient
 export interface ProcessedIngredient {
-  elementId?: HexElement;
+  elementId: HexElement;
   processedValue: number;
   name: string;
 }

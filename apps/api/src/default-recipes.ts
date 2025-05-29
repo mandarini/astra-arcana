@@ -1,69 +1,209 @@
 import {
   Recipe,
+  Ingredient,
+  Incantation,
 } from '@astra-arcana/spellcasting-types';
 import { defaultIngredients, defaultIncantations } from './default-data';
 
-// Collection of recipes from various magical traditions
-export const defaultRecipes: Recipe[] = [
+// Recipe definition with string collections
+interface RecipeDefinition {
+  name: string;
+  origin: string;
+  ingredientNames: string[];
+  incantationNames: string[];
+}
+
+// Raw recipe definitions using string names
+const recipeDefinitions: RecipeDefinition[] = [
   {
-    name: 'Digital Detox Ritual',
+    name: 'Digital Detox Sanctuary',
     origin: 'Modern Grimoire for the Digital Age',
-    ingredients: [
-      defaultIngredients.find(i => i.name === 'Lab-grown phoenix feather')!,
-      defaultIngredients.find(i => i.name === 'Cloud-harvested rainwater')!,
-      defaultIngredients.find(i => i.name === 'Biodegradable glitter')!,
+    ingredientNames: [
+      'Void-touched obsidian',
+      'Cloud-harvested rainwater',
+      'Meditation cushion stuffing',
     ],
-    incantations: [
-      defaultIncantations.find(i => i.name === 'Digital Detoxify')!,
-      defaultIncantations.find(i => i.name === 'Aura Cleanse 2.0')!,
-    ],
+    incantationNames: ['Digital Detoxify', 'Mindful Disconnect'],
   },
   {
-    name: 'Protection Spell',
-    origin: 'Hogwarts Curriculum, Year 3',
-    ingredients: [
-      defaultIngredients.find(i => i.name === 'Ethically sourced dragon scales')!,
-      defaultIngredients.find(i => i.name === 'Solar-charged crystal')!,
+    name: 'Elemental Shield of Protection',
+    origin: 'Hexagonal Defense Compendium',
+    ingredientNames: [
+      'Ethically sourced dragon scales',
+      'Himalayan pink salt',
+      'Solar-charged crystal',
     ],
-    incantations: [
-      defaultIncantations.find(i => i.name === 'Protego Maxima')!,
-    ],
+    incantationNames: ['Protego Maxima', 'Terra Stabilitas'],
   },
   {
-    name: 'Manifestation Boost',
+    name: 'Aesthetic Manifestation Ritual',
     origin: 'Bruja TikTok Collective, 2024',
-    ingredients: [
-      defaultIngredients.find(i => i.name === 'Himalayan pink salt')!,
-      defaultIngredients.find(i => i.name === 'CBD oil')!,
-      defaultIngredients.find(i => i.name === 'Oat milk')!,
+    ingredientNames: [
+      'Prism-split sunlight',
+      'Aetheric starlight essence',
+      'Biodegradable glitter',
     ],
-    incantations: [
-      defaultIncantations.find(i => i.name === 'Manifestación Ahora')!,
-      defaultIncantations.find(i => i.name === 'Vibrational Alignment')!,
-    ],
+    incantationNames: ['Manifestación Ahora', 'Stellar Navigation'],
   },
   {
-    name: 'Levitation Charm',
+    name: 'Levitation Mastery',
     origin: 'Classical Spellbook of Elementary Witchcraft',
-    ingredients: [
-      defaultIngredients.find(i => i.name === '3D-printed unicorn horn')!,
-      defaultIngredients.find(i => i.name === 'Smart home dust')!,
+    ingredientNames: [
+      'Compressed wind essence',
+      'Smart home dust',
+      'Lab-grown phoenix feather',
     ],
-    incantations: [
-      defaultIncantations.find(i => i.name === 'Wingardium Leviosa')!,
+    incantationNames: ['Wingardium Leviosa', 'Unmute Energy'],
+  },
+  {
+    name: 'Eco-Harmony Enchantment',
+    origin: 'EcoWitch Compendium, Vol. 3',
+    ingredientNames: [
+      'Organic mandrake root',
+      'Ethically sourced sage',
+      'Artisanal sea salt',
+      'Recycled smartphone glass',
+    ],
+    incantationNames: [
+      'Wyrd Recycling',
+      'Bío-Hacking Harmonia',
+      'Elemental Harmony',
     ],
   },
   {
-    name: 'Tech Sustainability Enchantment',
-    origin: 'EcoWitch Compendium, Vol. 3',
-    ingredients: [
-      defaultIngredients.find(i => i.name === 'Pulverized Microchips')!,
-      defaultIngredients.find(i => i.name === 'Organic mandrake root')!,
-      defaultIngredients.find(i => i.name === 'Cold brew coffee grounds')!,
+    name: 'Self-Care Sanctuary Spell',
+    origin: 'Wellness Witch Weekly, Issue 42',
+    ingredientNames: [
+      'CBD oil',
+      'Synthesized mermaid tears',
+      'Quantum-entangled sand',
     ],
-    incantations: [
-      defaultIncantations.find(i => i.name === 'Wyrd Recycling')!,
-      defaultIncantations.find(i => i.name === 'Bío-Hacking Harmonia')!,
+    incantationNames: ['Aqua Vitae', 'Void Whisper'],
+  },
+  {
+    name: 'Algorithm Banishment Ritual',
+    origin: 'Digital Liberation Front Spellbook',
+    ingredientNames: [
+      'Fossilized WiFi signals',
+      'Vintage typewriter keys',
+      'Compressed wind essence',
     ],
+    incantationNames: ['Banish Algorithm', 'Recursion Reversa'],
+  },
+  {
+    name: 'Plant Parent Blessing',
+    origin: 'Urban Druid Handbook, 3rd Edition',
+    ingredientNames: [
+      'Organic mandrake root',
+      'Cloud-harvested rainwater',
+      'Cold brew coffee grounds',
+    ],
+    incantationNames: ['Terra Stabilitas', 'Aqua Vitae'],
+  },
+  {
+    name: 'Caffeine Amplification Elixir',
+    origin: 'Productivity Witch Quarterly',
+    ingredientNames: [
+      'Cold brew coffee grounds',
+      'Solar-charged crystal',
+      'Himalayan pink salt',
+    ],
+    incantationNames: ['Ignis Purificare', 'Vibrational Alignment'],
+  },
+  {
+    name: 'Confidence Manifestation Spell',
+    origin: 'Empowerment Coven Chronicles',
+    ingredientNames: [
+      'Moonbeam-infused silver',
+      'Prism-split sunlight',
+      'Compressed wind essence',
+    ],
+    incantationNames: ['Unmute Energy', 'Cosmic Alignment', 'Lumos Maxima'],
+  },
+  {
+    name: 'Viral Content Charm',
+    origin: 'Influencer Witch Academy',
+    ingredientNames: [
+      'Biodegradable glitter',
+      'Lab-grown phoenix feather',
+      'Smart home dust',
+    ],
+    incantationNames: ['Subscribe To My Channel', 'Unmute Energy'],
+  },
+  {
+    name: 'Retrowave Nostalgia Invocation',
+    origin: 'Vaporwave Grimoire, 1987',
+    ingredientNames: [
+      'Charcoal from vintage vinyl',
+      'Vintage typewriter keys',
+      'Prism-split sunlight',
+    ],
+    incantationNames: ['Void Whisper', 'Ignis Purificare'],
   },
 ];
+
+/**
+ * Processes recipe definitions to create full Recipe objects
+ * Creates lookup maps for efficient ingredient/incantation resolution
+ */
+function processRecipes(
+  definitions: RecipeDefinition[],
+  ingredients: Ingredient[],
+  incantations: Incantation[]
+): Recipe[] {
+  // Create lookup maps for O(1) access
+  const ingredientMap = new Map<string, Ingredient>();
+  const incantationMap = new Map<string, Incantation>();
+
+  // Populate lookup maps
+  ingredients.forEach((ingredient) => {
+    ingredientMap.set(ingredient.name, ingredient);
+  });
+
+  incantations.forEach((incantation) => {
+    incantationMap.set(incantation.name, incantation);
+  });
+
+  // Process each recipe definition
+  return definitions.map((definition) => {
+    // Resolve ingredients
+    const resolvedIngredients: Ingredient[] = [];
+    definition.ingredientNames.forEach((name) => {
+      const ingredient = ingredientMap.get(name);
+      if (ingredient) {
+        resolvedIngredients.push(ingredient);
+      } else {
+        console.warn(
+          `Warning: Ingredient "${name}" not found in recipe "${definition.name}"`
+        );
+      }
+    });
+
+    // Resolve incantations
+    const resolvedIncantations: Incantation[] = [];
+    definition.incantationNames.forEach((name) => {
+      const incantation = incantationMap.get(name);
+      if (incantation) {
+        resolvedIncantations.push(incantation);
+      } else {
+        console.warn(
+          `Warning: Incantation "${name}" not found in recipe "${definition.name}"`
+        );
+      }
+    });
+
+    return {
+      name: definition.name,
+      origin: definition.origin,
+      ingredients: resolvedIngredients,
+      incantations: resolvedIncantations,
+    };
+  });
+}
+
+// Export the processed recipes
+export const defaultRecipes: Recipe[] = processRecipes(
+  recipeDefinitions,
+  defaultIngredients,
+  defaultIncantations
+);

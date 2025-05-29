@@ -4,7 +4,6 @@ import {
   Element,
   Language,
   MoonPhase,
-  Recipe,
 } from '@astra-arcana/spellcasting-types';
 
 // Modern and traditional ingredients for the hip witch of 2025
@@ -86,6 +85,67 @@ export const defaultIngredients: Ingredient[] = [
     affinity: 'fire' as Element,
     age: 'old',
   },
+  // Additional ingredients for special effects and elemental balance
+  {
+    name: 'Void-touched obsidian',
+    affinity: 'void' as Element,
+    age: 'ancient',
+  },
+  {
+    name: 'Aetheric starlight essence',
+    affinity: 'aether' as Element,
+    age: 'old',
+  },
+  {
+    name: 'Quantum-entangled sand',
+    affinity: 'void' as Element,
+    age: 'fresh',
+  },
+  {
+    name: 'Moonbeam-infused silver',
+    affinity: 'aether' as Element,
+    age: 'ancient',
+  },
+  {
+    name: 'Recycled smartphone glass',
+    affinity: 'air' as Element,
+    age: 'fresh',
+  },
+  {
+    name: 'Artisanal sea salt',
+    affinity: 'water' as Element,
+    age: 'old',
+  },
+  {
+    name: 'Ethically sourced sage',
+    affinity: 'earth' as Element,
+    age: 'fresh',
+  },
+  {
+    name: 'Vintage typewriter keys',
+    affinity: 'void' as Element,
+    age: 'old',
+  },
+  {
+    name: 'Prism-split sunlight',
+    affinity: 'fire' as Element,
+    age: 'fresh',
+  },
+  {
+    name: 'Compressed wind essence',
+    affinity: 'air' as Element,
+    age: 'fresh',
+  },
+  {
+    name: 'Meditation cushion stuffing',
+    affinity: 'aether' as Element,
+    age: 'fresh',
+  },
+  {
+    name: 'Fossilized WiFi signals',
+    affinity: 'void' as Element,
+    age: 'ancient',
+  },
 ];
 
 // A mix of traditional and contemporary incantations
@@ -131,6 +191,7 @@ export const defaultIncantations: Incantation[] = [
   {
     name: 'Banish Algorithm',
     language: 'English' as Language,
+    affinity: 'void' as Element,
     kind: 'spell',
     moonphase: 'waning' as MoonPhase,
   },
@@ -144,6 +205,7 @@ export const defaultIncantations: Incantation[] = [
   {
     name: 'Manifestación Ahora',
     language: 'Spanish' as Language,
+    affinity: 'aether' as Element,
     kind: 'ritual',
     moonphase: 'waxing' as MoonPhase,
   },
@@ -156,6 +218,7 @@ export const defaultIncantations: Incantation[] = [
   {
     name: 'Bío-Hacking Harmonia',
     language: 'Latin' as Language,
+    affinity: 'earth' as Element,
     kind: 'support',
     moonphase: 'waxing' as MoonPhase,
   },
@@ -165,5 +228,65 @@ export const defaultIncantations: Incantation[] = [
     affinity: 'air' as Element,
     kind: 'spell',
     moonphase: 'full' as MoonPhase,
+  },
+  // Additional incantations for special effects and elemental balance
+  {
+    name: 'Wingardium Leviosa',
+    language: 'Latin' as Language,
+    affinity: 'air' as Element,
+    kind: 'spell',
+  },
+  {
+    name: 'Void Whisper',
+    language: 'Sanskrit' as Language,
+    affinity: 'void' as Element,
+    kind: 'ritual',
+    moonphase: 'new' as MoonPhase,
+  },
+  {
+    name: 'Stellar Navigation',
+    language: 'Latin' as Language,
+    affinity: 'aether' as Element,
+    kind: 'spell',
+    moonphase: 'full' as MoonPhase,
+  },
+  {
+    name: 'Aqua Vitae',
+    language: 'Latin' as Language,
+    affinity: 'water' as Element,
+    kind: 'ritual',
+  },
+  {
+    name: 'Ignis Purificare',
+    language: 'Latin' as Language,
+    affinity: 'fire' as Element,
+    kind: 'ritual',
+    moonphase: 'waxing' as MoonPhase,
+  },
+  {
+    name: 'Terra Stabilitas',
+    language: 'Latin' as Language,
+    affinity: 'earth' as Element,
+    kind: 'support',
+  },
+  {
+    name: 'Mindful Disconnect',
+    language: 'English' as Language,
+    affinity: 'void' as Element,
+    kind: 'ritual',
+    moonphase: 'waning' as MoonPhase,
+  },
+  {
+    name: 'Cosmic Alignment',
+    language: 'Sanskrit' as Language,
+    affinity: 'aether' as Element,
+    kind: 'ritual',
+    moonphase: 'full' as MoonPhase,
+  },
+  {
+    name: 'Elemental Harmony',
+    language: 'Old Norse' as Language,
+    kind: 'support',
+    moonphase: 'waxing' as MoonPhase,
   },
 ];
