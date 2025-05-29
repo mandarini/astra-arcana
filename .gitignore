@@ -46,3 +46,8 @@ vitest.config.*.timestamp*
 
 # Wrangler
 .wrangler/
+
+.cursor/rules/nx-rules.mdc
+.cursor/mcp.json
+.github/instructions/nx.instructions.md
+.vscode/mcp.json
