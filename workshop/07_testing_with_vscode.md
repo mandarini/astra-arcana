@@ -7,7 +7,7 @@ Create a new file `.vscode/mcp.json` with:
   "servers": {
     "astra-arcana": {
       "command": "node",
-      "args": ["${workspaceFolder}/apps/mcp-server/dist/main.js"]
+      "args": ["./apps/mcp-server/dist/main.js"]
     }
   }
 }
