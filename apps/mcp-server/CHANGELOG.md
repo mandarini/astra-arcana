@@ -1,0 +1,3 @@
+# 1.0.0 (2025-05-29)
+
+This was a version bump only for @astra-arcana/mcp-server to align it with other projects, there were no code changes.
