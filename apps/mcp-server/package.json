@@ -1,5 +1,5 @@
 {
-  "name": "@astra-arcana/mcp-server",
+  "name": "@katerinas/mcp-server-2",
   "version": "1.3.0",
   "private": false,
   "bin": "./main.js",
